@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>APM.gg</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -1943,6 +1943,143 @@ footer{
   padding:2px 0;
 }
 
+
+/* ══ AD OVERLAY ══════════════════════════════════════════════════ */
+#ad-overlay {
+  display:none;position:fixed;inset:0;z-index:800;
+  background:rgba(10,6,30,0.97);
+  align-items:center;justify-content:center;
+  flex-direction:column;gap:16px;
+}
+#ad-overlay.active { display:flex; }
+.ad-spinner {
+  width:36px;height:36px;border-radius:50%;
+  border:3px solid rgba(255,255,255,0.1);
+  border-top-color:#7c3aed;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+.ad-label {
+  font-family:var(--font-b);font-size:12px;font-weight:600;
+  color:rgba(255,255,255,0.4);letter-spacing:.06em;text-transform:uppercase;
+}
+
+
+/* ══════════════════════════════════════════
+   RESPONSIVE MOBILE (< 680px)
+══════════════════════════════════════════ */
+@media (max-width: 680px) {
+
+  /* ── Header ── */
+  header {
+    padding: 0 14px;
+    gap: 8px;
+  }
+  .h-nav { display: none; } /* nav masquée → accès via boutons dans chaque écran */
+  .h-pill:first-of-type { display: none; } /* masquer "2847 en ligne" */
+  .h-pill { padding: 5px 10px 5px 5px; }
+  .logo { font-size: 14px; }
+  #sync-indicator { display: none; }
+
+  /* ── Bento grid → colonne unique ── */
+  .bento {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 10px;
+    padding: 10px;
+    overflow-y: auto;
+    height: calc(100dvh - 64px);
+  }
+  .card-ranked   { grid-column: 1; grid-row: auto; }
+  .card-practice { grid-column: 1; grid-row: auto; }
+  .card-endless  { grid-column: 1; grid-row: auto; }
+  .card-boss     { grid-column: 1; grid-row: auto; }
+  .card-ranked .card-title { font-size: clamp(36px, 10vw, 52px); }
+  .card-boss .card-title   { font-size: clamp(28px, 8vw, 44px); }
+  .ranked-stats { gap: 14px; flex-wrap: wrap; }
+  .card-icon { font-size: 70px !important; }
+
+  /* ── Game screen ── */
+  .g-header { padding: 10px 14px; gap: 10px; flex-wrap: wrap; }
+  .g-stats   { gap: 12px; }
+  .g-text    { font-size: 16px; line-height: 2; padding: 14px; }
+  .g-text-box { padding: 0 8px; }
+  .g-main   { padding: 10px 8px; }
+  .g-res-wpm { font-size: 48px !important; }
+  .g-res-stats { gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .g-res-item { min-width: 70px; }
+  .g-results { padding: 20px 16px; border-radius: 18px; max-width: 95vw; }
+
+  /* ── Profil → colonne unique ── */
+  .pf-body {
+    grid-template-columns: 1fr;
+    padding: 16px;
+    gap: 16px;
+  }
+  .pf-hero { padding: 16px; }
+  .pf-stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .pf-stat-card  { padding: 10px 8px; }
+  .pf-stat-val   { font-size: 18px; }
+  .pf-section    { padding: 14px; }
+  .pf-chart      { overflow-x: auto; }
+  .pf-history-list { gap: 4px; }
+
+  /* ── Leaderboard ── */
+  .lb-wpm      { display: none; } /* masquer WPM sur mobile */
+  .lb-user-bar { padding: 8px 12px; gap: 10px; }
+  .lb-row      { padding: 8px 12px; gap: 10px; }
+  .lb-elo      { font-size: 13px; }
+  .lb-name     { font-size: 12px; }
+  .lb-list-wrap { padding: 0 8px 8px; }
+  .lb-header   { padding: 0 12px; }
+  .lb-tabs     { gap: 6px; padding: 8px 12px; }
+
+  /* ── Boss select ── */
+  .bs-body {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 10px;
+  }
+  .bs-card { font-size: 13px; }
+  .bs-emoji { font-size: 28px; }
+
+  /* ── History overlay ── */
+  .history-panel {
+    width: 95vw;
+    max-height: 80dvh;
+    border-radius: 18px;
+  }
+
+  /* ── Rank-up overlay ── */
+  .ru-badges { gap: 16px; }
+  .ru-badge-wrap img { width: 72px; height: 72px; }
+  .ru-new span { font-size: 16px; }
+
+  /* ── Achievement toast ── */
+  .ach-toast { min-width: 260px; max-width: 90vw; }
+  #ach-toast-container { right: 12px; bottom: 16px; }
+
+  /* ── Modales (pseudo, rank-up) ── */
+  #pseudo-modal { padding: 28px 20px; }
+  .pm-title { font-size: 18px; }
+
+  /* ── Hint texte ── */
+  .g-hint { font-size: 11px; padding: 6px 12px; }
+}
+
+/* ══ TABLETTE (680px – 1024px) ═══════════════ */
+@media (min-width: 681px) and (max-width: 1024px) {
+  .bento {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+  }
+  .card-ranked   { grid-column: 1 / 3; grid-row: 1; }
+  .card-practice { grid-column: 1;     grid-row: 2; }
+  .card-endless  { grid-column: 2;     grid-row: 2; }
+  .card-boss     { grid-column: 1 / 3; grid-row: 3; }
+  .pf-body { grid-template-columns: 260px 1fr; }
+}
+
 </style>
   <!-- CrazyGames SDK -->
   <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
@@ -2987,6 +3124,8 @@ function endGame(outcome) {
 
   document.getElementById('g-results').classList.add('show');
   document.querySelector('.g-hint').style.visibility = 'hidden';
+  // Pub entre les parties (toutes les AD_FREQUENCY parties)
+  setTimeout(() => maybeShowAd(), 500);
 
   // Bouton retour adapté selon le mode
   const backBtn = document.getElementById('g-res-back-btn');
@@ -4284,6 +4423,7 @@ async function initCrazyGames() {
     // Initialiser le SDK si disponible
     if(window.CrazyGames?.SDK) {
       await CrazyGames.SDK.init();
+      initAds(); // enregistrer les listeners d'ads
       const user = await CrazyGames.SDK.user.getUser();
       if(user?.username) {
         playerName = user.username;
@@ -4384,6 +4524,47 @@ function startEditPseudo() {
     }
   });
 }
+
+/* ══════════════════════════════════════════
+   CRAZYGAMES ADS
+══════════════════════════════════════════ */
+let _gamesPlayedSinceAd = 0;
+const AD_FREQUENCY = 3; // 1 pub toutes les N parties
+
+function initAds() {
+  if(!window.CrazyGames?.SDK?.ad) return;
+  // Événements SDK
+  CrazyGames.SDK.ad.addEventListener('adStarted', () => {
+    document.getElementById('ad-overlay').classList.add('active');
+  });
+  CrazyGames.SDK.ad.addEventListener('adFinished', () => {
+    document.getElementById('ad-overlay').classList.remove('active');
+  });
+  CrazyGames.SDK.ad.addEventListener('adError', () => {
+    document.getElementById('ad-overlay').classList.remove('active');
+  });
+}
+
+async function maybeShowAd() {
+  _gamesPlayedSinceAd++;
+  if(_gamesPlayedSinceAd < AD_FREQUENCY) return;
+  if(!window.CrazyGames?.SDK?.ad) return;
+  _gamesPlayedSinceAd = 0;
+  try {
+    await CrazyGames.SDK.ad.requestAd('midgame');
+  } catch(e) {}
+}
+
+
+// Ajustement hauteur sur mobile quand le clavier virtuel s'ouvre
+if(window.visualViewport) {
+  window.visualViewport.addEventListener('resize', () => {
+    const gs = document.getElementById('game-screen');
+    if(gs && gs.classList.contains('active')) {
+      gs.style.height = window.visualViewport.height + 'px';
+    }
+  });
+}
 try { initStorage(); } catch(e) { console.error("initStorage failed:", e); }
 initCrazyGames();
 
@@ -4421,6 +4602,13 @@ initCrazyGames();
     <div class="pm-hint">Entre 3 et 20 caractères</div>
     <button class="pm-btn" onclick="confirmPseudo()">Commencer →</button>
   </div>
+</div>
+
+
+<!-- AD OVERLAY -->
+<div id="ad-overlay">
+  <div class="ad-spinner"></div>
+  <div class="ad-label">Publicité en cours...</div>
 </div>
 
 </body>
