@@ -1,0 +1,81 @@
+<svg viewBox="-6 -6 212 212" xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+  <defs>
+    <linearGradient id="g_emeraude" x1="25%" y1="0%" x2="75%" y2="100%">
+      <stop offset="0%" stop-color="#28d888"/><stop offset="100%" stop-color="#087048"/>
+    </linearGradient>
+    <linearGradient id="shine_emeraude" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.28"/>
+      <stop offset="55%" stop-color="white" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow_emeraude" x="-25%" y="-25%" width="150%" height="175%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#044830" flood-opacity="0.55"/>
+    </filter>
+    <clipPath id="top_emeraude"><rect x="-6" y="-6" width="212" height="106"/></clipPath>
+  </defs>
+  <polygon points="100.00,16.00 172.75,58.00 172.75,142.00 100.00,184.00 27.25,142.00 27.25,58.00" fill="none" stroke="#50e8a0" stroke-width="1" opacity="0.2"/>
+  <polygon points="100.00,21.00 168.42,60.50 168.42,139.50 100.00,179.00 31.58,139.50 31.58,60.50" fill="none" stroke="#50e8a0" stroke-width="1" opacity="0.3"/>
+  <polygon points="100.00,15.00 173.61,57.50 173.61,142.50 100.00,185.00 26.39,142.50 26.39,57.50" fill="none" stroke="#50e8a0" stroke-width="2.2" opacity="0.55"/>
+  <polygon points="91.7,21.4 100.0,6.0 108.3,21.4" fill="#50e8a0" opacity="0.72"/>
+  <polygon points="163.9,53.6 181.4,53.0 172.2,67.9" fill="#50e8a0" opacity="0.72"/>
+  <polygon points="172.2,132.1 181.4,147.0 163.9,146.4" fill="#50e8a0" opacity="0.72"/>
+  <polygon points="108.3,178.6 100.0,194.0 91.7,178.6" fill="#50e8a0" opacity="0.72"/>
+  <polygon points="36.1,146.4 18.6,147.0 27.8,132.1" fill="#50e8a0" opacity="0.72"/>
+  <polygon points="27.8,67.9 18.6,53.0 36.1,53.6" fill="#50e8a0" opacity="0.72"/>
+  <circle cx="145.0" cy="22.1" r="3" fill="#50e8a0" opacity="0.55"/>
+  <circle cx="190.0" cy="100.0" r="3" fill="#50e8a0" opacity="0.55"/>
+  <circle cx="145.0" cy="177.9" r="3" fill="#50e8a0" opacity="0.55"/>
+  <circle cx="55.0" cy="177.9" r="3" fill="#50e8a0" opacity="0.55"/>
+  <circle cx="10.0" cy="100.0" r="3" fill="#50e8a0" opacity="0.55"/>
+  <circle cx="55.0" cy="22.1" r="3" fill="#50e8a0" opacity="0.55"/>
+  <circle cx="143.0" cy="25.5" r="1.8" fill="#50e8a0" opacity="0.35"/>
+  <circle cx="186.0" cy="100.0" r="1.8" fill="#50e8a0" opacity="0.35"/>
+  <circle cx="143.0" cy="174.5" r="1.8" fill="#50e8a0" opacity="0.35"/>
+  <circle cx="57.0" cy="174.5" r="1.8" fill="#50e8a0" opacity="0.35"/>
+  <circle cx="14.0" cy="100.0" r="1.8" fill="#50e8a0" opacity="0.35"/>
+  <circle cx="57.0" cy="25.5" r="1.8" fill="#50e8a0" opacity="0.35"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#g_emeraude)" filter="url(#shadow_emeraude)"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#shine_emeraude)" clip-path="url(#top_emeraude)"/>
+  <polygon points="100.00,37.00 154.56,68.50 154.56,131.50 100.00,163.00 45.44,131.50 45.44,68.50" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+  
+  <!-- Face superieure (blanc brillant) -->
+  <polygon points="100,67 119,77 119,86 100,76 81,86 81,77"
+           fill="white" opacity="0.92"/>
+
+  <!-- Biseau haut gauche (blanc pur) -->
+  <polygon points="81,77 100,67 100,76 81,86"
+           fill="white" opacity="0.72"/>
+
+  <!-- Biseau haut droit (blanc semi) -->
+  <polygon points="100,67 119,77 119,86 100,76"
+           fill="white" opacity="0.55"/>
+
+  <!-- Face avant gauche (blanc moyen) -->
+  <polygon points="81,86 100,76 100,131 81,121"
+           fill="white" opacity="0.75"/>
+
+  <!-- Face avant droite (blanc sombre) -->
+  <polygon points="100,76 119,86 119,121 100,131"
+           fill="white" opacity="0.40"/>
+
+  <!-- Ligne reflet interne -->
+  <line x1="85" y1="89" x2="87" y2="119"
+        stroke="rgba(4,70,40,0.25)" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Sparkle haut gauche -->
+  <g transform="translate(88,92)">
+    <line x1="0" y1="-6" x2="0" y2="6" stroke="white" stroke-width="1.8" stroke-linecap="round" opacity="0.95"/>
+    <line x1="-6" y1="0" x2="6" y2="0" stroke="white" stroke-width="1.8" stroke-linecap="round" opacity="0.95"/>
+    <line x1="-3" y1="-3" x2="3" y2="3" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.55"/>
+    <line x1="3" y1="-3" x2="-3" y2="3" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.55"/>
+  </g>
+
+  <!-- Sparkle bas droite -->
+  <g transform="translate(112,114)">
+    <line x1="0" y1="-5" x2="0" y2="5" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity="0.88"/>
+    <line x1="-5" y1="0" x2="5" y2="0" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity="0.88"/>
+    <line x1="-2.5" y1="-2.5" x2="2.5" y2="2.5" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+    <line x1="2.5" y1="-2.5" x2="-2.5" y2="2.5" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+  </g>
+
+</svg>

@@ -1,0 +1,25 @@
+<svg viewBox="-6 -6 212 212" xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+  <defs>
+    <linearGradient id="g_bronze" x1="25%" y1="0%" x2="75%" y2="100%">
+      <stop offset="0%" stop-color="#d4884a"/><stop offset="100%" stop-color="#7c3410"/>
+    </linearGradient>
+    <linearGradient id="shine_bronze" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.28"/>
+      <stop offset="55%" stop-color="white" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow_bronze" x="-25%" y="-25%" width="150%" height="175%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#7c3410" flood-opacity="0.55"/>
+    </filter>
+    <clipPath id="top_bronze"><rect x="-6" y="-6" width="212" height="106"/></clipPath>
+  </defs>
+  <polygon points="100.00,16.00 172.75,58.00 172.75,142.00 100.00,184.00 27.25,142.00 27.25,58.00" fill="none" stroke="#e8a060" stroke-width="1" opacity="0.2"/>
+  
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#g_bronze)" filter="url(#shadow_bronze)"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#shine_bronze)" clip-path="url(#top_bronze)"/>
+  <polygon points="100.00,37.00 154.56,68.50 154.56,131.50 100.00,163.00 45.44,131.50 45.44,68.50" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+  
+    <polyline points="78,107 100,79 122,107"
+              fill="none" stroke="white" stroke-width="12"
+              stroke-linejoin="round" stroke-linecap="round" opacity="0.88"/>
+</svg>

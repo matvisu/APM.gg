@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"/>
+<title>Badges APM.gg</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#ede9ff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;font-family:'Syne',sans-serif;}
+h1{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7b6ea8;margin-bottom:48px;}
+.grid{display:flex;flex-wrap:wrap;gap:40px;justify-content:center;max-width:960px;}
+.badge-item{display:flex;flex-direction:column;align-items:center;gap:12px;}
+.badge-wrap{filter:drop-shadow(0 8px 24px rgba(27,22,64,0.22));transition:transform .3s cubic-bezier(0.34,1.56,0.64,1),filter .3s;cursor:pointer;}
+.badge-wrap:hover{transform:scale(1.12) translateY(-4px);filter:drop-shadow(0 16px 32px rgba(27,22,64,0.32));}
+.badge-name{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#7b6ea8;letter-spacing:.06em;text-transform:uppercase;}
+.badge-elo{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;color:rgba(123,110,168,0.6);}
+</style></head><body>
+<h1>APM.gg — Rank Badges</h1>
+<div class="grid">
+  <div class="badge-item">
+    <div class="badge-wrap"><svg viewBox="-6 -6 212 212" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+  <defs>
+    <linearGradient id="g_bronze" x1="25%" y1="0%" x2="75%" y2="100%">
+      <stop offset="0%" stop-color="#d4884a"/><stop offset="100%" stop-color="#7c3410"/>
+    </linearGradient>
+    <linearGradient id="shine_bronze" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.28"/>
+      <stop offset="55%" stop-color="white" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow_bronze" x="-25%" y="-25%" width="150%" height="175%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#7c3410" flood-opacity="0.55"/>
+    </filter>
+    <clipPath id="top_bronze"><rect x="-6" y="-6" width="212" height="106"/></clipPath>
+  </defs>
+  <polygon points="100.00,16.00 172.75,58.00 172.75,142.00 100.00,184.00 27.25,142.00 27.25,58.00" fill="none" stroke="#e8a060" stroke-width="1" opacity="0.2"/>
+  
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#g_bronze)" filter="url(#shadow_bronze)"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#shine_bronze)" clip-path="url(#top_bronze)"/>
+  <polygon points="100.00,37.00 154.56,68.50 154.56,131.50 100.00,163.00 45.44,131.50 45.44,68.50" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+  
+    <polyline points="78,107 100,79 122,107"
+              fill="none" stroke="white" stroke-width="12"
+              stroke-linejoin="round" stroke-linecap="round" opacity="0.88"/>
+</svg></div>
+    <div class="badge-name">Bronze</div>
+    <div class="badge-elo">0-600 ELO</div>
+  </div>
+  <div class="badge-item">
+    <div class="badge-wrap"><svg viewBox="-6 -6 212 212" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+  <defs>
+    <linearGradient id="g_argent" x1="25%" y1="0%" x2="75%" y2="100%">
+      <stop offset="0%" stop-color="#c8d8e8"/><stop offset="100%" stop-color="#5878a0"/>
+    </linearGradient>
+    <linearGradient id="shine_argent" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.28"/>
+      <stop offset="55%" stop-color="white" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow_argent" x="-25%" y="-25%" width="150%" height="175%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#2858a0" flood-opacity="0.55"/>
+    </filter>
+    <clipPath id="top_argent"><rect x="-6" y="-6" width="212" height="106"/></clipPath>
+  </defs>
+  <polygon points="100.00,16.00 172.75,58.00 172.75,142.00 100.00,184.00 27.25,142.00 27.25,58.00" fill="none" stroke="#b8d4f0" stroke-width="1" opacity="0.2"/>
+  <circle cx="100.0" cy="18.0" r="3" fill="#b8d4f0" opacity="0.6"/>
+  <circle cx="171.0" cy="59.0" r="3" fill="#b8d4f0" opacity="0.6"/>
+  <circle cx="171.0" cy="141.0" r="3" fill="#b8d4f0" opacity="0.6"/>
+  <circle cx="100.0" cy="182.0" r="3" fill="#b8d4f0" opacity="0.6"/>
+  <circle cx="29.0" cy="141.0" r="3" fill="#b8d4f0" opacity="0.6"/>
+  <circle cx="29.0" cy="59.0" r="3" fill="#b8d4f0" opacity="0.6"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#g_argent)" filter="url(#shadow_argent)"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#shine_argent)" clip-path="url(#top_argent)"/>
+  <polygon points="100.00,37.00 154.56,68.50 154.56,131.50 100.00,163.00 45.44,131.50 45.44,68.50" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+  
+    <polyline points="78,107 100,79 122,107"
+              fill="none" stroke="white" stroke-width="11"
+              stroke-linejoin="round" stroke-linecap="round" opacity="0.88"/>
+    <polyline points="78,122 100,94 122,122"
+              fill="none" stroke="white" stroke-width="8"
+              stroke-linejoin="round" stroke-linecap="round" opacity="0.48"/>
+</svg></div>
+    <div class="badge-name">Argent</div>
+    <div class="badge-elo">601-900 ELO</div>
+  </div>
+  <div class="badge-item">
+    <div class="badge-wrap"><svg viewBox="-6 -6 212 212" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+  <defs>
+    <linearGradient id="g_gold" x1="25%" y1="0%" x2="75%" y2="100%">
+      <stop offset="0%" stop-color="#fcd060"/><stop offset="100%" stop-color="#c07808"/>
+    </linearGradient>
+    <linearGradient id="shine_gold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.28"/>
+      <stop offset="55%" stop-color="white" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow_gold" x="-25%" y="-25%" width="150%" height="175%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#804808" flood-opacity="0.55"/>
+    </filter>
+    <clipPath id="top_gold"><rect x="-6" y="-6" width="212" height="106"/></clipPath>
+  </defs>
+  <polygon points="100.00,16.00 172.75,58.00 172.75,142.00 100.00,184.00 27.25,142.00 27.25,58.00" fill="none" stroke="#fde890" stroke-width="1" opacity="0.2"/>
+  <polygon points="100.00,17.00 171.88,58.50 171.88,141.50 100.00,183.00 28.12,141.50 28.12,58.50" fill="none" stroke="#fde890" stroke-width="1.5" opacity="0.5"/>
+  <polygon points="100.0,13.0 104.0,17.0 100.0,21.0 96.0,17.0" fill="#fde890" opacity="0.72"/>
+  <polygon points="171.9,54.5 175.9,58.5 171.9,62.5 167.9,58.5" fill="#fde890" opacity="0.72"/>
+  <polygon points="171.9,137.5 175.9,141.5 171.9,145.5 167.9,141.5" fill="#fde890" opacity="0.72"/>
+  <polygon points="100.0,179.0 104.0,183.0 100.0,187.0 96.0,183.0" fill="#fde890" opacity="0.72"/>
+  <polygon points="28.1,137.5 32.1,141.5 28.1,145.5 24.1,141.5" fill="#fde890" opacity="0.72"/>
+  <polygon points="28.1,54.5 32.1,58.5 28.1,62.5 24.1,58.5" fill="#fde890" opacity="0.72"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#g_gold)" filter="url(#shadow_gold)"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#shine_gold)" clip-path="url(#top_gold)"/>
+  <polygon points="100.00,37.00 154.56,68.50 154.56,131.50 100.00,163.00 45.44,131.50 45.44,68.50" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+  
+    <polygon points="100.0,72.0 107.8,92.2 128.0,100.0 107.8,107.8 100.0,128.0 92.2,107.8 72.0,100.0 92.2,92.2"
+             fill="white" opacity="0.92"/>
+    <circle cx="100" cy="100" r="7" fill="rgba(180,110,0,0.35)"/>
+</svg></div>
+    <div class="badge-name">Gold</div>
+    <div class="badge-elo">901-1200 ELO</div>
+  </div>
+  <div class="badge-item">
+    <div class="badge-wrap"><svg viewBox="-6 -6 212 212" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+  <defs>
+    <linearGradient id="g_platine" x1="25%" y1="0%" x2="75%" y2="100%">
+      <stop offset="0%" stop-color="#d8eeff"/><stop offset="100%" stop-color="#4870c0"/>
+    </linearGradient>
+    <linearGradient id="shine_platine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.28"/>
+      <stop offset="55%" stop-color="white" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow_platine" x="-25%" y="-25%" width="150%" height="175%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#2850a0" flood-opacity="0.55"/>
+    </filter>
+    <clipPath id="top_platine"><rect x="-6" y="-6" width="212" height="106"/></clipPath>
+  </defs>
+  <polygon points="100.00,16.00 172.75,58.00 172.75,142.00 100.00,184.00 27.25,142.00 27.25,58.00" fill="none" stroke="#a8d0ff" stroke-width="1" opacity="0.2"/>
+  <polygon points="100.00,20.00 169.28,60.00 169.28,140.00 100.00,180.00 30.72,140.00 30.72,60.00" fill="none" stroke="#a8d0ff" stroke-width="1.2" opacity="0.35"/>
+  <polygon points="100.00,14.00 174.48,57.00 174.48,143.00 100.00,186.00 25.52,143.00 25.52,57.00" fill="none" stroke="#a8d0ff" stroke-width="2" opacity="0.52"/>
+  <polygon points="93.1,21.3 100.0,8.0 106.9,21.3" fill="#a8d0ff" opacity="0.65"/>
+  <polygon points="164.7,54.7 179.7,54.0 171.6,66.6" fill="#a8d0ff" opacity="0.65"/>
+  <polygon points="171.6,133.4 179.7,146.0 164.7,145.3" fill="#a8d0ff" opacity="0.65"/>
+  <polygon points="106.9,178.7 100.0,192.0 93.1,178.7" fill="#a8d0ff" opacity="0.65"/>
+  <polygon points="35.3,145.3 20.3,146.0 28.4,133.4" fill="#a8d0ff" opacity="0.65"/>
+  <polygon points="28.4,66.6 20.3,54.0 35.3,54.7" fill="#a8d0ff" opacity="0.65"/>
+  <circle cx="144.0" cy="23.8" r="2.5" fill="#a8d0ff" opacity="0.5"/>
+  <circle cx="188.0" cy="100.0" r="2.5" fill="#a8d0ff" opacity="0.5"/>
+  <circle cx="144.0" cy="176.2" r="2.5" fill="#a8d0ff" opacity="0.5"/>
+  <circle cx="56.0" cy="176.2" r="2.5" fill="#a8d0ff" opacity="0.5"/>
+  <circle cx="12.0" cy="100.0" r="2.5" fill="#a8d0ff" opacity="0.5"/>
+  <circle cx="56.0" cy="23.8" r="2.5" fill="#a8d0ff" opacity="0.5"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#g_platine)" filter="url(#shadow_platine)"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#shine_platine)" clip-path="url(#top_platine)"/>
+  <polygon points="100.00,37.00 154.56,68.50 154.56,131.50 100.00,163.00 45.44,131.50 45.44,68.50" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+  
+    <polygon points="100.0,72.0 106.0,89.6 124.2,86.0 112.0,100.0 124.2,114.0 106.0,110.4 100.0,128.0 94.0,110.4 75.8,114.0 88.0,100.0 75.8,86.0 94.0,89.6"
+             fill="white" opacity="0.92"/>
+    <circle cx="100" cy="100" r="9" fill="white" opacity="0.25"/>
+    <circle cx="100" cy="100" r="5" fill="white" opacity="0.8"/>
+</svg></div>
+    <div class="badge-name">Platine</div>
+    <div class="badge-elo">1201-1500 ELO</div>
+  </div>
+  <div class="badge-item">
+    <div class="badge-wrap"><svg viewBox="-6 -6 212 212" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+  <defs>
+    <linearGradient id="g_emeraude" x1="25%" y1="0%" x2="75%" y2="100%">
+      <stop offset="0%" stop-color="#28d888"/><stop offset="100%" stop-color="#087048"/>
+    </linearGradient>
+    <linearGradient id="shine_emeraude" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.28"/>
+      <stop offset="55%" stop-color="white" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow_emeraude" x="-25%" y="-25%" width="150%" height="175%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#044830" flood-opacity="0.55"/>
+    </filter>
+    <clipPath id="top_emeraude"><rect x="-6" y="-6" width="212" height="106"/></clipPath>
+  </defs>
+  <polygon points="100.00,16.00 172.75,58.00 172.75,142.00 100.00,184.00 27.25,142.00 27.25,58.00" fill="none" stroke="#50e8a0" stroke-width="1" opacity="0.2"/>
+  <polygon points="100.00,21.00 168.42,60.50 168.42,139.50 100.00,179.00 31.58,139.50 31.58,60.50" fill="none" stroke="#50e8a0" stroke-width="1" opacity="0.3"/>
+  <polygon points="100.00,15.00 173.61,57.50 173.61,142.50 100.00,185.00 26.39,142.50 26.39,57.50" fill="none" stroke="#50e8a0" stroke-width="2.2" opacity="0.55"/>
+  <polygon points="91.7,21.4 100.0,6.0 108.3,21.4" fill="#50e8a0" opacity="0.72"/>
+  <polygon points="163.9,53.6 181.4,53.0 172.2,67.9" fill="#50e8a0" opacity="0.72"/>
+  <polygon points="172.2,132.1 181.4,147.0 163.9,146.4" fill="#50e8a0" opacity="0.72"/>
+  <polygon points="108.3,178.6 100.0,194.0 91.7,178.6" fill="#50e8a0" opacity="0.72"/>
+  <polygon points="36.1,146.4 18.6,147.0 27.8,132.1" fill="#50e8a0" opacity="0.72"/>
+  <polygon points="27.8,67.9 18.6,53.0 36.1,53.6" fill="#50e8a0" opacity="0.72"/>
+  <circle cx="145.0" cy="22.1" r="3" fill="#50e8a0" opacity="0.55"/>
+  <circle cx="190.0" cy="100.0" r="3" fill="#50e8a0" opacity="0.55"/>
+  <circle cx="145.0" cy="177.9" r="3" fill="#50e8a0" opacity="0.55"/>
+  <circle cx="55.0" cy="177.9" r="3" fill="#50e8a0" opacity="0.55"/>
+  <circle cx="10.0" cy="100.0" r="3" fill="#50e8a0" opacity="0.55"/>
+  <circle cx="55.0" cy="22.1" r="3" fill="#50e8a0" opacity="0.55"/>
+  <circle cx="143.0" cy="25.5" r="1.8" fill="#50e8a0" opacity="0.35"/>
+  <circle cx="186.0" cy="100.0" r="1.8" fill="#50e8a0" opacity="0.35"/>
+  <circle cx="143.0" cy="174.5" r="1.8" fill="#50e8a0" opacity="0.35"/>
+  <circle cx="57.0" cy="174.5" r="1.8" fill="#50e8a0" opacity="0.35"/>
+  <circle cx="14.0" cy="100.0" r="1.8" fill="#50e8a0" opacity="0.35"/>
+  <circle cx="57.0" cy="25.5" r="1.8" fill="#50e8a0" opacity="0.35"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#g_emeraude)" filter="url(#shadow_emeraude)"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#shine_emeraude)" clip-path="url(#top_emeraude)"/>
+  <polygon points="100.00,37.00 154.56,68.50 154.56,131.50 100.00,163.00 45.44,131.50 45.44,68.50" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+  
+    <polygon points="80,82 120,82 130,92 130,108 120,118 80,118 70,108 70,92"
+             fill="white" opacity="0.88"/>
+    <polygon points="86,88 114,88 122,96 122,104 114,112 86,112 78,104 78,96"
+             fill="rgba(4,70,40,0.35)"/>
+    <line x1="80" y1="82" x2="86" y2="88" stroke="rgba(4,70,40,0.4)" stroke-width="1.2"/>
+    <line x1="120" y1="82" x2="114" y2="88" stroke="rgba(4,70,40,0.4)" stroke-width="1.2"/>
+    <line x1="130" y1="92" x2="122" y2="96" stroke="rgba(4,70,40,0.4)" stroke-width="1.2"/>
+    <line x1="130" y1="108" x2="122" y2="104" stroke="rgba(4,70,40,0.4)" stroke-width="1.2"/>
+    <line x1="120" y1="118" x2="114" y2="112" stroke="rgba(4,70,40,0.4)" stroke-width="1.2"/>
+    <line x1="80" y1="118" x2="86" y2="112" stroke="rgba(4,70,40,0.4)" stroke-width="1.2"/>
+    <line x1="70" y1="108" x2="78" y2="104" stroke="rgba(4,70,40,0.4)" stroke-width="1.2"/>
+    <line x1="70" y1="92" x2="78" y2="96" stroke="rgba(4,70,40,0.4)" stroke-width="1.2"/>
+</svg></div>
+    <div class="badge-name">Emeraude</div>
+    <div class="badge-elo">1501-1800 ELO</div>
+  </div>
+  <div class="badge-item">
+    <div class="badge-wrap"><svg viewBox="-6 -6 212 212" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+  <defs>
+    <linearGradient id="g_diamant" x1="25%" y1="0%" x2="75%" y2="100%">
+      <stop offset="0%" stop-color="#48a8ff"/><stop offset="100%" stop-color="#1038c0"/>
+    </linearGradient>
+    <linearGradient id="shine_diamant" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.28"/>
+      <stop offset="55%" stop-color="white" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow_diamant" x="-25%" y="-25%" width="150%" height="175%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0828a0" flood-opacity="0.55"/>
+    </filter>
+    <clipPath id="top_diamant"><rect x="-6" y="-6" width="212" height="106"/></clipPath>
+  </defs>
+  <polygon points="100.00,16.00 172.75,58.00 172.75,142.00 100.00,184.00 27.25,142.00 27.25,58.00" fill="none" stroke="#78c8ff" stroke-width="1" opacity="0.2"/>
+  <polygon points="100.00,21.00 168.42,60.50 168.42,139.50 100.00,179.00 31.58,139.50 31.58,60.50" fill="none" stroke="#78c8ff" stroke-width="1" opacity="0.28"/>
+  <polygon points="100.00,15.00 173.61,57.50 173.61,142.50 100.00,185.00 26.39,142.50 26.39,57.50" fill="none" stroke="#78c8ff" stroke-width="2" opacity="0.48"/>
+  <polygon points="91.7,21.4 100.0,4.0 108.3,21.4" fill="#78c8ff" opacity="0.78"/>
+  <polygon points="163.9,53.6 183.1,52.0 172.2,67.9" fill="#78c8ff" opacity="0.78"/>
+  <polygon points="172.2,132.1 183.1,148.0 163.9,146.4" fill="#78c8ff" opacity="0.78"/>
+  <polygon points="108.3,178.6 100.0,196.0 91.7,178.6" fill="#78c8ff" opacity="0.78"/>
+  <polygon points="36.1,146.4 16.9,148.0 27.8,132.1" fill="#78c8ff" opacity="0.78"/>
+  <polygon points="27.8,67.9 16.9,52.0 36.1,53.6" fill="#78c8ff" opacity="0.78"/>
+  <polygon points="135.5,27.2 144.5,22.9 145.3,32.8" fill="#78c8ff" opacity="0.52"/>
+  <polygon points="180.8,94.3 189.0,100.0 180.8,105.7" fill="#78c8ff" opacity="0.52"/>
+  <polygon points="145.3,167.2 144.5,177.1 135.5,172.8" fill="#78c8ff" opacity="0.52"/>
+  <polygon points="64.5,172.8 55.5,177.1 54.7,167.2" fill="#78c8ff" opacity="0.52"/>
+  <polygon points="19.2,105.7 11.0,100.0 19.2,94.3" fill="#78c8ff" opacity="0.52"/>
+  <polygon points="54.7,32.8 55.5,22.9 64.5,27.2" fill="#78c8ff" opacity="0.52"/>
+  <circle cx="100.0" cy="3.0" r="2.8" fill="#60b8ff" opacity="0.85"/>
+  <circle cx="184.0" cy="51.5" r="2.8" fill="#60b8ff" opacity="0.85"/>
+  <circle cx="184.0" cy="148.5" r="2.8" fill="#60b8ff" opacity="0.85"/>
+  <circle cx="100.0" cy="197.0" r="2.8" fill="#60b8ff" opacity="0.85"/>
+  <circle cx="16.0" cy="148.5" r="2.8" fill="#60b8ff" opacity="0.85"/>
+  <circle cx="16.0" cy="51.5" r="2.8" fill="#60b8ff" opacity="0.85"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#g_diamant)" filter="url(#shadow_diamant)"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#shine_diamant)" clip-path="url(#top_diamant)"/>
+  <polygon points="100.00,37.00 154.56,68.50 154.56,131.50 100.00,163.00 45.44,131.50 45.44,68.50" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+  
+    <polygon points="84,80 116,80 130,98 100,128 70,98"
+             fill="white" opacity="0.88"/>
+    <polygon points="84,80 116,80 100,94"
+             fill="rgba(16,56,192,0.3)"/>
+    <polygon points="70,98 100,94 100,128"
+             fill="rgba(16,56,192,0.18)"/>
+    <polygon points="130,98 100,94 100,128"
+             fill="rgba(16,56,192,0.25)"/>
+    <line x1="84" y1="80" x2="100" y2="94" stroke="rgba(16,56,192,0.4)" stroke-width="1.2"/>
+    <line x1="116" y1="80" x2="100" y2="94" stroke="rgba(16,56,192,0.4)" stroke-width="1.2"/>
+    <line x1="100" y1="94" x2="100" y2="128" stroke="rgba(16,56,192,0.3)" stroke-width="1"/>
+    <line x1="70" y1="98" x2="130" y2="98" stroke="rgba(16,56,192,0.3)" stroke-width="1"/>
+</svg></div>
+    <div class="badge-name">Diamant</div>
+    <div class="badge-elo">1801-2100 ELO</div>
+  </div>
+  <div class="badge-item">
+    <div class="badge-wrap"><svg viewBox="-6 -6 212 212" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+  <defs>
+    <linearGradient id="g_master" x1="25%" y1="0%" x2="75%" y2="100%">
+      <stop offset="0%" stop-color="#f03858"/><stop offset="100%" stop-color="#780818"/>
+    </linearGradient>
+    <linearGradient id="shine_master" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.28"/>
+      <stop offset="55%" stop-color="white" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow_master" x="-25%" y="-25%" width="150%" height="175%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#500008" flood-opacity="0.55"/>
+    </filter>
+    <clipPath id="top_master"><rect x="-6" y="-6" width="212" height="106"/></clipPath>
+  </defs>
+  <polygon points="100.00,16.00 172.75,58.00 172.75,142.00 100.00,184.00 27.25,142.00 27.25,58.00" fill="none" stroke="#f87090" stroke-width="1" opacity="0.2"/>
+  <polygon points="100.00,22.00 167.55,61.00 167.55,139.00 100.00,178.00 32.45,139.00 32.45,61.00" fill="none" stroke="#f87090" stroke-width="1" opacity="0.25"/>
+  <polygon points="100.00,17.00 171.88,58.50 171.88,141.50 100.00,183.00 28.12,141.50 28.12,58.50" fill="none" stroke="#f87090" stroke-width="1.5" opacity="0.4"/>
+  <polygon points="100.00,12.00 176.21,56.00 176.21,144.00 100.00,188.00 23.79,144.00 23.79,56.00" fill="none" stroke="#f87090" stroke-width="2.5" opacity="0.55"/>
+  <polygon points="90.4,21.6 100.0,2.0 109.6,21.6" fill="#f87090" opacity="0.82"/>
+  <polygon points="163.1,52.5 184.9,51.0 172.7,69.1" fill="#f87090" opacity="0.82"/>
+  <polygon points="172.7,130.9 184.9,149.0 163.1,147.5" fill="#f87090" opacity="0.82"/>
+  <polygon points="109.6,178.4 100.0,198.0 90.4,178.4" fill="#f87090" opacity="0.82"/>
+  <polygon points="36.9,147.5 15.1,149.0 27.3,130.9" fill="#f87090" opacity="0.82"/>
+  <polygon points="27.3,69.1 15.1,51.0 36.9,52.5" fill="#f87090" opacity="0.82"/>
+  <polygon points="134.9,26.9 145.5,21.2 145.9,33.2" fill="#f87090" opacity="0.58"/>
+  <polygon points="180.8,93.6 191.0,100.0 180.8,106.4" fill="#f87090" opacity="0.58"/>
+  <polygon points="145.9,166.8 145.5,178.8 134.9,173.1" fill="#f87090" opacity="0.58"/>
+  <polygon points="65.1,173.1 54.5,178.8 54.1,166.8" fill="#f87090" opacity="0.58"/>
+  <polygon points="19.2,106.4 9.0,100.0 19.2,93.6" fill="#f87090" opacity="0.58"/>
+  <polygon points="54.1,33.2 54.5,21.2 65.1,26.9" fill="#f87090" opacity="0.58"/>
+  <circle cx="100.0" cy="1.0" r="3.2" fill="#f05070" opacity="0.88"/>
+  <circle cx="185.7" cy="50.5" r="3.2" fill="#f05070" opacity="0.88"/>
+  <circle cx="185.7" cy="149.5" r="3.2" fill="#f05070" opacity="0.88"/>
+  <circle cx="100.0" cy="199.0" r="3.2" fill="#f05070" opacity="0.88"/>
+  <circle cx="14.3" cy="149.5" r="3.2" fill="#f05070" opacity="0.88"/>
+  <circle cx="14.3" cy="50.5" r="3.2" fill="#f05070" opacity="0.88"/>
+  <circle cx="146.0" cy="20.3" r="2" fill="#f87090" opacity="0.5"/>
+  <circle cx="192.0" cy="100.0" r="2" fill="#f87090" opacity="0.5"/>
+  <circle cx="146.0" cy="179.7" r="2" fill="#f87090" opacity="0.5"/>
+  <circle cx="54.0" cy="179.7" r="2" fill="#f87090" opacity="0.5"/>
+  <circle cx="8.0" cy="100.0" r="2" fill="#f87090" opacity="0.5"/>
+  <circle cx="54.0" cy="20.3" r="2" fill="#f87090" opacity="0.5"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#g_master)" filter="url(#shadow_master)"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#shine_master)" clip-path="url(#top_master)"/>
+  <polygon points="100.00,37.00 154.56,68.50 154.56,131.50 100.00,163.00 45.44,131.50 45.44,68.50" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+  
+    <path d="M75,119 L75,95 L88,111 L100,73 L112,111 L125,95 L125,119 Z"
+          fill="white" opacity="0.92"/>
+    <rect x="75" y="119" width="50" height="9" rx="4" fill="white" opacity="0.88"/>
+    <circle cx="88"  cy="111" r="3.5" fill="white" opacity="0.55"/>
+    <circle cx="112" cy="111" r="3.5" fill="white" opacity="0.55"/>
+</svg></div>
+    <div class="badge-name">Master</div>
+    <div class="badge-elo">2101-2500 ELO</div>
+  </div>
+  <div class="badge-item">
+    <div class="badge-wrap"><svg viewBox="-6 -6 212 212" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+  <defs>
+    <linearGradient id="g_champion" x1="25%" y1="0%" x2="75%" y2="100%">
+      <stop offset="0%" stop-color="#b060f8"/><stop offset="100%" stop-color="#2808a0"/>
+    </linearGradient>
+    <linearGradient id="shine_champion" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.28"/>
+      <stop offset="55%" stop-color="white" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow_champion" x="-25%" y="-25%" width="150%" height="175%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#1808a0" flood-opacity="0.55"/>
+    </filter>
+    <clipPath id="top_champion"><rect x="-6" y="-6" width="212" height="106"/></clipPath>
+  </defs>
+  <polygon points="100.00,16.00 172.75,58.00 172.75,142.00 100.00,184.00 27.25,142.00 27.25,58.00" fill="none" stroke="#d090ff" stroke-width="1" opacity="0.2"/>
+  <polygon points="100.00,23.00 166.68,61.50 166.68,138.50 100.00,177.00 33.32,138.50 33.32,61.50" fill="none" stroke="#d090ff" stroke-width="1" opacity="0.22"/>
+  <polygon points="100.00,18.00 171.01,59.00 171.01,141.00 100.00,182.00 28.99,141.00 28.99,59.00" fill="none" stroke="#d090ff" stroke-width="1.5" opacity="0.35"/>
+  <polygon points="100.00,13.00 175.34,56.50 175.34,143.50 100.00,187.00 24.66,143.50 24.66,56.50" fill="none" stroke="#d090ff" stroke-width="2.2" opacity="0.5"/>
+  <polygon points="100.00,7.00 180.54,53.50 180.54,146.50 100.00,193.00 19.46,146.50 19.46,53.50" fill="none" stroke="#ffd060" stroke-width="1.2" opacity="0.5"/>
+  <polygon points="89.0,21.8 100.0,1.0 111.0,21.8" fill="#ffd060" opacity="0.88"/>
+  <polygon points="162.3,51.4 185.7,50.5 173.2,70.4" fill="#ffd060" opacity="0.88"/>
+  <polygon points="173.2,129.6 185.7,149.5 162.3,148.6" fill="#ffd060" opacity="0.88"/>
+  <polygon points="111.0,178.2 100.0,199.0 89.0,178.2" fill="#ffd060" opacity="0.88"/>
+  <polygon points="37.7,148.6 14.3,149.5 26.8,129.6" fill="#ffd060" opacity="0.88"/>
+  <polygon points="26.8,70.4 14.3,50.5 37.7,51.4" fill="#ffd060" opacity="0.88"/>
+  <polygon points="134.2,26.6 146.5,19.5 146.5,33.6" fill="#d090ff" opacity="0.65"/>
+  <polygon points="180.7,92.9 193.0,100.0 180.7,107.1" fill="#d090ff" opacity="0.65"/>
+  <polygon points="146.5,166.4 146.5,180.5 134.2,173.4" fill="#d090ff" opacity="0.65"/>
+  <polygon points="65.8,173.4 53.5,180.5 53.5,166.4" fill="#d090ff" opacity="0.65"/>
+  <polygon points="19.3,107.1 7.0,100.0 19.3,92.9" fill="#d090ff" opacity="0.65"/>
+  <polygon points="53.5,33.6 53.5,19.5 65.8,26.6" fill="#d090ff" opacity="0.65"/>
+  <circle cx="100.0" cy="0.0" r="3.5" fill="#ffd060" opacity="0.92"/>
+  <circle cx="186.6" cy="50.0" r="3.5" fill="#ffd060" opacity="0.92"/>
+  <circle cx="186.6" cy="150.0" r="3.5" fill="#ffd060" opacity="0.92"/>
+  <circle cx="100.0" cy="200.0" r="3.5" fill="#ffd060" opacity="0.92"/>
+  <circle cx="13.4" cy="150.0" r="3.5" fill="#ffd060" opacity="0.92"/>
+  <circle cx="13.4" cy="50.0" r="3.5" fill="#ffd060" opacity="0.92"/>
+  <circle cx="147.5" cy="17.7" r="2.5" fill="#c880ff" opacity="0.75"/>
+  <circle cx="195.0" cy="100.0" r="2.5" fill="#c880ff" opacity="0.75"/>
+  <circle cx="147.5" cy="182.3" r="2.5" fill="#c880ff" opacity="0.75"/>
+  <circle cx="52.5" cy="182.3" r="2.5" fill="#c880ff" opacity="0.75"/>
+  <circle cx="5.0" cy="100.0" r="2.5" fill="#c880ff" opacity="0.75"/>
+  <circle cx="52.5" cy="17.7" r="2.5" fill="#c880ff" opacity="0.75"/>
+  <circle cx="144.0" cy="23.8" r="1.5" fill="#ffd060" opacity="0.6"/>
+  <circle cx="188.0" cy="100.0" r="1.5" fill="#ffd060" opacity="0.6"/>
+  <circle cx="144.0" cy="176.2" r="1.5" fill="#ffd060" opacity="0.6"/>
+  <circle cx="56.0" cy="176.2" r="1.5" fill="#ffd060" opacity="0.6"/>
+  <circle cx="12.0" cy="100.0" r="1.5" fill="#ffd060" opacity="0.6"/>
+  <circle cx="56.0" cy="23.8" r="1.5" fill="#ffd060" opacity="0.6"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#g_champion)" filter="url(#shadow_champion)"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#shine_champion)" clip-path="url(#top_champion)"/>
+  <polygon points="100.00,37.00 154.56,68.50 154.56,131.50 100.00,163.00 45.44,131.50 45.44,68.50" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+  
+    <polygon points="100.0,70.0 105.0,88.0 121.2,78.8 112.0,95.0 130.0,100.0 112.0,105.0 121.2,121.2 105.0,112.0 100.0,130.0 95.0,112.0 78.8,121.2 88.0,105.0 70.0,100.0 88.0,95.0 78.8,78.8 95.0,88.0"
+             fill="white" opacity="0.92"/>
+    <circle cx="100" cy="100" r="10" fill="white" opacity="0.22"/>
+    <circle cx="100" cy="100" r="6"  fill="white" opacity="0.75"/>
+</svg></div>
+    <div class="badge-name">Champion</div>
+    <div class="badge-elo">2501+ ELO</div>
+  </div>
+</div></body></html>

@@ -1,0 +1,33 @@
+<svg viewBox="-6 -6 212 212" xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+  <defs>
+    <linearGradient id="g_argent" x1="25%" y1="0%" x2="75%" y2="100%">
+      <stop offset="0%" stop-color="#c8d8e8"/><stop offset="100%" stop-color="#5878a0"/>
+    </linearGradient>
+    <linearGradient id="shine_argent" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.28"/>
+      <stop offset="55%" stop-color="white" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow_argent" x="-25%" y="-25%" width="150%" height="175%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#2858a0" flood-opacity="0.55"/>
+    </filter>
+    <clipPath id="top_argent"><rect x="-6" y="-6" width="212" height="106"/></clipPath>
+  </defs>
+  <polygon points="100.00,16.00 172.75,58.00 172.75,142.00 100.00,184.00 27.25,142.00 27.25,58.00" fill="none" stroke="#b8d4f0" stroke-width="1" opacity="0.2"/>
+  <circle cx="100.0" cy="18.0" r="3" fill="#b8d4f0" opacity="0.6"/>
+  <circle cx="171.0" cy="59.0" r="3" fill="#b8d4f0" opacity="0.6"/>
+  <circle cx="171.0" cy="141.0" r="3" fill="#b8d4f0" opacity="0.6"/>
+  <circle cx="100.0" cy="182.0" r="3" fill="#b8d4f0" opacity="0.6"/>
+  <circle cx="29.0" cy="141.0" r="3" fill="#b8d4f0" opacity="0.6"/>
+  <circle cx="29.0" cy="59.0" r="3" fill="#b8d4f0" opacity="0.6"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#g_argent)" filter="url(#shadow_argent)"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#shine_argent)" clip-path="url(#top_argent)"/>
+  <polygon points="100.00,37.00 154.56,68.50 154.56,131.50 100.00,163.00 45.44,131.50 45.44,68.50" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+  
+    <polyline points="78,107 100,79 122,107"
+              fill="none" stroke="white" stroke-width="11"
+              stroke-linejoin="round" stroke-linecap="round" opacity="0.88"/>
+    <polyline points="78,122 100,94 122,122"
+              fill="none" stroke="white" stroke-width="8"
+              stroke-linejoin="round" stroke-linecap="round" opacity="0.48"/>
+</svg>

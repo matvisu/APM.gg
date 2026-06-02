@@ -1,0 +1,59 @@
+<svg viewBox="-6 -6 212 212" xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+  <defs>
+    <linearGradient id="g_champion" x1="25%" y1="0%" x2="75%" y2="100%">
+      <stop offset="0%" stop-color="#b060f8"/><stop offset="100%" stop-color="#2808a0"/>
+    </linearGradient>
+    <linearGradient id="shine_champion" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.28"/>
+      <stop offset="55%" stop-color="white" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow_champion" x="-25%" y="-25%" width="150%" height="175%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#1808a0" flood-opacity="0.55"/>
+    </filter>
+    <clipPath id="top_champion"><rect x="-6" y="-6" width="212" height="106"/></clipPath>
+  </defs>
+  <polygon points="100.00,16.00 172.75,58.00 172.75,142.00 100.00,184.00 27.25,142.00 27.25,58.00" fill="none" stroke="#d090ff" stroke-width="1" opacity="0.2"/>
+  <polygon points="100.00,23.00 166.68,61.50 166.68,138.50 100.00,177.00 33.32,138.50 33.32,61.50" fill="none" stroke="#d090ff" stroke-width="1" opacity="0.22"/>
+  <polygon points="100.00,18.00 171.01,59.00 171.01,141.00 100.00,182.00 28.99,141.00 28.99,59.00" fill="none" stroke="#d090ff" stroke-width="1.5" opacity="0.35"/>
+  <polygon points="100.00,13.00 175.34,56.50 175.34,143.50 100.00,187.00 24.66,143.50 24.66,56.50" fill="none" stroke="#d090ff" stroke-width="2.2" opacity="0.5"/>
+  <polygon points="100.00,7.00 180.54,53.50 180.54,146.50 100.00,193.00 19.46,146.50 19.46,53.50" fill="none" stroke="#ffd060" stroke-width="1.2" opacity="0.5"/>
+  <polygon points="89.0,21.8 100.0,1.0 111.0,21.8" fill="#ffd060" opacity="0.88"/>
+  <polygon points="162.3,51.4 185.7,50.5 173.2,70.4" fill="#ffd060" opacity="0.88"/>
+  <polygon points="173.2,129.6 185.7,149.5 162.3,148.6" fill="#ffd060" opacity="0.88"/>
+  <polygon points="111.0,178.2 100.0,199.0 89.0,178.2" fill="#ffd060" opacity="0.88"/>
+  <polygon points="37.7,148.6 14.3,149.5 26.8,129.6" fill="#ffd060" opacity="0.88"/>
+  <polygon points="26.8,70.4 14.3,50.5 37.7,51.4" fill="#ffd060" opacity="0.88"/>
+  <polygon points="134.2,26.6 146.5,19.5 146.5,33.6" fill="#d090ff" opacity="0.65"/>
+  <polygon points="180.7,92.9 193.0,100.0 180.7,107.1" fill="#d090ff" opacity="0.65"/>
+  <polygon points="146.5,166.4 146.5,180.5 134.2,173.4" fill="#d090ff" opacity="0.65"/>
+  <polygon points="65.8,173.4 53.5,180.5 53.5,166.4" fill="#d090ff" opacity="0.65"/>
+  <polygon points="19.3,107.1 7.0,100.0 19.3,92.9" fill="#d090ff" opacity="0.65"/>
+  <polygon points="53.5,33.6 53.5,19.5 65.8,26.6" fill="#d090ff" opacity="0.65"/>
+  <circle cx="100.0" cy="0.0" r="3.5" fill="#ffd060" opacity="0.92"/>
+  <circle cx="186.6" cy="50.0" r="3.5" fill="#ffd060" opacity="0.92"/>
+  <circle cx="186.6" cy="150.0" r="3.5" fill="#ffd060" opacity="0.92"/>
+  <circle cx="100.0" cy="200.0" r="3.5" fill="#ffd060" opacity="0.92"/>
+  <circle cx="13.4" cy="150.0" r="3.5" fill="#ffd060" opacity="0.92"/>
+  <circle cx="13.4" cy="50.0" r="3.5" fill="#ffd060" opacity="0.92"/>
+  <circle cx="147.5" cy="17.7" r="2.5" fill="#c880ff" opacity="0.75"/>
+  <circle cx="195.0" cy="100.0" r="2.5" fill="#c880ff" opacity="0.75"/>
+  <circle cx="147.5" cy="182.3" r="2.5" fill="#c880ff" opacity="0.75"/>
+  <circle cx="52.5" cy="182.3" r="2.5" fill="#c880ff" opacity="0.75"/>
+  <circle cx="5.0" cy="100.0" r="2.5" fill="#c880ff" opacity="0.75"/>
+  <circle cx="52.5" cy="17.7" r="2.5" fill="#c880ff" opacity="0.75"/>
+  <circle cx="144.0" cy="23.8" r="1.5" fill="#ffd060" opacity="0.6"/>
+  <circle cx="188.0" cy="100.0" r="1.5" fill="#ffd060" opacity="0.6"/>
+  <circle cx="144.0" cy="176.2" r="1.5" fill="#ffd060" opacity="0.6"/>
+  <circle cx="56.0" cy="176.2" r="1.5" fill="#ffd060" opacity="0.6"/>
+  <circle cx="12.0" cy="100.0" r="1.5" fill="#ffd060" opacity="0.6"/>
+  <circle cx="56.0" cy="23.8" r="1.5" fill="#ffd060" opacity="0.6"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#g_champion)" filter="url(#shadow_champion)"/>
+  <polygon points="100.00,30.00 160.62,65.00 160.62,135.00 100.00,170.00 39.38,135.00 39.38,65.00" fill="url(#shine_champion)" clip-path="url(#top_champion)"/>
+  <polygon points="100.00,37.00 154.56,68.50 154.56,131.50 100.00,163.00 45.44,131.50 45.44,68.50" fill="none" stroke="white" stroke-width="1.2" opacity="0.2"/>
+  
+    <polygon points="100.0,70.0 105.0,88.0 121.2,78.8 112.0,95.0 130.0,100.0 112.0,105.0 121.2,121.2 105.0,112.0 100.0,130.0 95.0,112.0 78.8,121.2 88.0,105.0 70.0,100.0 88.0,95.0 78.8,78.8 95.0,88.0"
+             fill="white" opacity="0.92"/>
+    <circle cx="100" cy="100" r="10" fill="white" opacity="0.22"/>
+    <circle cx="100" cy="100" r="6"  fill="white" opacity="0.75"/>
+</svg>

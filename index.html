@@ -1,0 +1,4121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>APM.gg</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
+  <style>
+
+/* ─── TOKENS ───────────────────────────── */
+:root {
+  --bg:      #ede9ff;
+  --surface: rgba(255,255,255,0.55);
+  --border:  rgba(140,110,255,0.12);
+  --ink:     #1b1640;
+  --muted:   #7b6ea8;
+
+  --grad-ranked:   linear-gradient(135deg, #7c3aed 0%, #4338ca 100%);
+  --grad-practice: linear-gradient(135deg, #0891b2 0%, #0d9488 100%);
+  --grad-endless:  linear-gradient(135deg, #ea580c 0%, #db2777 100%);
+  --grad-boss:     linear-gradient(135deg, #be123c 0%, #7c3aed 100%);
+
+  --font-d: 'Syne', sans-serif;
+  --font-b: 'Inter', sans-serif;
+  --font-m: 'JetBrains Mono', monospace;
+  --ease:   cubic-bezier(0.34,1.56,0.64,1);
+  --ease-s: cubic-bezier(0.16,1,0.3,1);
+}
+
+/* ─── RESET ────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden}
+body{
+  font-family:var(--font-b);
+  background:var(--bg);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+}
+button{cursor:pointer;border:none;background:none;font-family:inherit;color:inherit}
+
+/* ─── BG TEXTURE ────────────────────────── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 70% 60% at 15% 10%, rgba(167,139,250,0.28) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 85% 80%, rgba(186,230,253,0.22) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 40% at 75% 10%, rgba(253,186,216,0.18) 0%, transparent 50%);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ─── SHELL ─────────────────────────────── */
+.shell{
+  position:relative;z-index:1;
+  height:100dvh;
+  display:grid;
+  grid-template-rows:64px 1fr;
+  padding:0;
+  overflow:hidden;
+}
+
+/* ─── HEADER ────────────────────────────── */
+header{
+  display:flex;
+  align-items:center;
+  padding:0 28px;
+  gap:0;
+  border-bottom:1px solid var(--border);
+  background:rgba(237,233,255,0.7);
+  backdrop-filter:blur(20px);
+}
+
+.logo{
+  font-family:var(--font-m);
+  font-weight:700;
+  font-size:17px;
+  letter-spacing:-0.03em;
+  color:var(--ink);
+}
+.logo em{
+  font-style:normal;
+  background:var(--grad-ranked);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.h-nav{
+  display:flex;
+  align-items:center;
+  gap:2px;
+  margin-left:32px;
+}
+.h-nav-link{
+  font-size:13px;
+  font-weight:600;
+  color:var(--muted);
+  padding:6px 14px;
+  border-radius:99px;
+  transition:color .15s, background .15s;
+}
+.h-nav-link:hover{color:var(--ink);background:rgba(120,80,240,0.08)}
+.h-nav-link.active{color:#7c3aed;background:rgba(124,58,237,0.1)}
+
+.h-right{
+  display:flex;align-items:center;gap:10px;
+  margin-left:auto;
+}
+
+.h-pill{
+  display:flex;align-items:center;gap:7px;
+  padding:7px 14px;
+  background:rgba(255,255,255,0.7);
+  border:1px solid var(--border);
+  border-radius:99px;
+  font-family:var(--font-m);
+  font-size:12px;
+  font-weight:700;
+  color:var(--ink);
+  backdrop-filter:blur(8px);
+}
+.h-pill .rank{
+  background:var(--grad-ranked);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.live-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:#22c55e;
+  box-shadow:0 0 7px #22c55e;
+  animation:ping 2s ease-in-out infinite;
+  flex-shrink:0;
+}
+@keyframes ping{
+  0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}
+  50%{box-shadow:0 0 0 6px rgba(34,197,94,0)}
+}
+
+.h-avatar{
+  width:34px;height:34px;border-radius:10px;
+  background:var(--grad-ranked);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-d);font-weight:800;font-size:15px;color:#fff;
+  transition:transform .2s var(--ease);
+}
+.h-avatar:hover{transform:scale(1.1)}
+
+/* ─── BENTO GRID ────────────────────────── */
+.bento{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  grid-template-rows:1fr 1fr;
+  gap:12px;
+  padding:12px 16px;
+  overflow:hidden;
+  height:100%;
+  min-height:0;
+}
+
+/* ─── BASE CARD ─────────────────────────── */
+.gcard{
+  border-radius:22px;
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:26px 28px;
+  transition:transform .3s var(--ease), box-shadow .3s var(--ease-s);
+  border:1px solid rgba(255,255,255,0.15);
+}
+.gcard:hover{
+  transform:translateY(-5px) scale(1.01);
+}
+.gcard:active{transform:scale(.98)}
+
+/* Big glass shine */
+.gcard::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:55%;
+  background:linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 100%);
+  pointer-events:none;
+  z-index:1;
+  border-radius:22px 22px 0 0;
+}
+
+/* ─── CARD POSITIONS ─── */
+/* Ranked: col 1-2, row 1-2 (big, left side) */
+.card-ranked   { grid-column:1/3; grid-row:1/3; }
+/* Practice: col 3, row 1 */
+.card-practice { grid-column:3;   grid-row:1; }
+/* Endless: col 3, row 2 — but split with boss */
+.card-endless  { grid-column:3;   grid-row:2; }
+
+/* Rethink: 3 cols, 2 rows
+   Ranked = col 1-2, row 1
+   Practice = col 3, row 1
+   Endless = col 1, row 2
+   Boss = col 2-3, row 2
+*/
+.card-ranked   { grid-column:1/3; grid-row:1; }
+.card-practice { grid-column:3;   grid-row:1; }
+.card-endless  { grid-column:1;   grid-row:2; }
+.card-boss     { grid-column:2/4; grid-row:2; }
+
+/* ─── CARD GRADIENTS ─── */
+.card-ranked   { background:var(--grad-ranked); box-shadow:0 16px 60px rgba(79,70,229,.35); }
+.card-practice { background:var(--grad-practice); box-shadow:0 12px 40px rgba(8,145,178,.28); }
+.card-endless  { background:var(--grad-endless); box-shadow:0 12px 40px rgba(234,88,12,.28); }
+.card-boss     { background:var(--grad-boss); box-shadow:0 12px 40px rgba(190,18,60,.28); }
+
+.card-ranked:hover  { box-shadow:0 28px 80px rgba(79,70,229,.45); }
+.card-practice:hover{ box-shadow:0 20px 60px rgba(8,145,178,.38); }
+.card-endless:hover { box-shadow:0 20px 60px rgba(234,88,12,.38); }
+.card-boss:hover    { box-shadow:0 20px 60px rgba(190,18,60,.38); }
+
+/* ─── FLOATING ICON ─────────────────────── */
+.card-icon{
+  position:absolute;
+  right:0; top:50%;
+  transform:translateY(-50%);
+  font-size:100px;
+  line-height:1;
+  opacity:0.22;
+  filter:drop-shadow(0 8px 24px rgba(0,0,0,.25));
+  transition:transform .4s var(--ease), opacity .3s;
+  user-select:none;
+  pointer-events:none;
+  z-index:0;
+}
+.card-ranked   .card-icon { font-size:160px; right:-10px; opacity:0.18; }
+.card-practice .card-icon { font-size:90px;  right:-8px;  opacity:0.22; }
+.card-endless  .card-icon { font-size:90px;  right:-8px;  opacity:0.22; }
+.card-boss     .card-icon { font-size:130px; right:-10px; opacity:0.18; }
+
+.gcard:hover .card-icon{
+  transform:translateY(-50%) scale(1.1) rotate(-6deg);
+  opacity:0.32;
+}
+
+/* ─── CARD BADGE ─── */
+.card-badge{
+  position:absolute;
+  top:18px; right:18px;
+  font-family:var(--font-d);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  padding:5px 12px;
+  border-radius:99px;
+  background:rgba(255,255,255,0.18);
+  color:#fff;
+  border:1px solid rgba(255,255,255,0.25);
+  backdrop-filter:blur(4px);
+  z-index:2;
+}
+
+/* ─── CARD CONTENT ──────────────────────── */
+.card-content{
+  position:relative;z-index:2;
+  display:flex;
+  flex-direction:column;
+  gap:0;
+}
+
+
+.card-eyebrow{
+  font-family:var(--font-b);
+  font-size:13px;
+  font-weight:500;
+  color:rgba(255,255,255,0.6);
+  letter-spacing:0.01em;
+  margin-bottom:8px;
+}
+
+.card-title{
+  font-family:var(--font-d);
+  font-weight:800;
+  color:#fff;
+  letter-spacing:0.01em;
+  line-height:1.15;
+  margin-bottom:10px;
+}
+.card-ranked   .card-title { font-size:clamp(52px,5.8vw,80px); }
+.card-practice .card-title { font-size:clamp(32px,3.4vw,48px); }
+.card-endless  .card-title { font-size:clamp(28px,3vw,40px); }
+.card-boss     .card-title { font-size:clamp(36px,4vw,60px); }
+
+.card-desc{
+  font-size:13px;
+  font-weight:500;
+  color:rgba(255,255,255,0.6);
+  line-height:1.55;
+  max-width:480px;
+  margin-bottom:20px;
+}
+.card-practice .card-desc,
+.card-endless  .card-desc { max-width:220px; font-size:12px; }
+
+/* ─── CARD FOOTER ─── */
+.card-footer{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.card-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:10px 22px;
+  background:rgba(255,255,255,0.18);
+  border:1px solid rgba(255,255,255,0.28);
+  border-radius:10px;
+  color:#fff;
+  font-family:var(--font-d);
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.01em;
+  backdrop-filter:blur(4px);
+  transition:background .2s, transform .2s var(--ease);
+}
+.card-btn:hover{background:rgba(255,255,255,0.28);transform:scale(1.04)}
+.card-btn:active{transform:scale(.97)}
+.card-btn svg{flex-shrink:0}
+
+/* Primary play btn on ranked */
+.card-ranked .card-btn-primary{
+  background:rgba(255,255,255,0.95);
+  color:#4338ca;
+  border-color:transparent;
+  font-size:14px;
+  padding:12px 28px;
+  box-shadow:0 6px 20px rgba(0,0,0,.2);
+}
+.card-ranked .card-btn-primary:hover{
+  background:#fff;
+  box-shadow:0 10px 30px rgba(0,0,0,.3);
+  transform:scale(1.04);
+}
+
+.card-stat{
+  font-family:var(--font-m);
+  font-size:12px;
+  font-weight:700;
+  color:rgba(255,255,255,0.45);
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+.card-stat .val{color:rgba(255,255,255,0.85)}
+
+/* ─── RANKED — extra stats row ─── */
+.ranked-stats{
+  display:flex;
+  gap:24px;
+  margin-bottom:20px;
+}
+.rs-item{
+  display:flex;flex-direction:column;gap:2px;
+}
+.rs-val{
+  font-family:var(--font-m);
+  font-size:22px;font-weight:700;
+  color:#fff;line-height:1;
+}
+.rs-lbl{
+  font-size:10px;font-weight:600;
+  color:rgba(255,255,255,0.45);
+  text-transform:uppercase;letter-spacing:.08em;
+}
+
+/* ─── FOOTER STATUS ─────────────────────── */
+footer{
+  display:flex;
+  align-items:center;
+  padding:0 20px;
+  gap:0;
+  border-top:1px solid var(--border);
+  background:rgba(237,233,255,0.7);
+  backdrop-filter:blur(20px);
+}
+.f-stat{
+  display:flex;align-items:center;gap:8px;
+  padding:0 20px;
+  height:100%;
+  border-right:1px solid var(--border);
+  flex-shrink:0;
+}
+.f-stat:last-child{border-right:none}
+.f-val{
+  font-family:var(--font-m);
+  font-size:14px;font-weight:700;
+  color:var(--ink);
+}
+.f-lbl{
+  font-size:11px;font-weight:500;
+  color:var(--muted);
+}
+/* Gradient values */
+.fv-p{background:var(--grad-ranked);  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.fv-t{background:var(--grad-practice);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.fv-o{background:var(--grad-endless); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.fv-r{background:var(--grad-boss);    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ─── ENTRANCE ───────────────────────────── */
+@keyframes in{
+  from{opacity:0;transform:translateY(20px) scale(.97)}
+  to  {opacity:1;transform:translateY(0) scale(1)}
+}
+.gcard{animation:in .5s var(--ease-s) both}
+.card-ranked  {animation-delay:.05s}
+.card-practice{animation-delay:.12s}
+.card-endless {animation-delay:.18s}
+.card-boss    {animation-delay:.24s}
+
+/* ─── GAME SCREEN ───────────────────────── */
+#game-screen{
+  display:none;
+  position:fixed;inset:0;z-index:100;
+  background:var(--bg);
+  flex-direction:column;
+  height:100dvh;
+  overflow:hidden;
+}
+#game-screen.active{ display:flex; }
+
+/* Game header */
+.g-header{
+  height:64px;
+  display:flex;
+  align-items:center;
+  padding:0 28px;
+  gap:20px;
+  border-bottom:1px solid var(--border);
+  background:rgba(237,233,255,0.7);
+  backdrop-filter:blur(20px);
+  flex-shrink:0;
+}
+.g-logo{
+  font-family:var(--font-m);font-weight:700;font-size:17px;
+  letter-spacing:-0.03em;color:var(--ink);
+}
+.g-logo em{font-style:normal;background:var(--grad-ranked);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+.g-timer-wrap{
+  margin-left:auto;
+  display:flex;align-items:center;gap:6px;
+}
+.g-timer{
+  font-family:var(--font-m);
+  font-size:32px;font-weight:700;
+  color:var(--ink);
+  min-width:48px;text-align:center;
+  line-height:1;
+  transition:color .3s;
+}
+.g-timer.warn{ color:#ea580c; }
+.g-timer.danger{ color:#be123c; animation:timer-pulse 1s ease infinite; }
+@keyframes timer-pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.g-timer-lbl{
+  font-family:var(--font-b);font-size:11px;font-weight:600;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.06em;
+}
+
+.g-live-stats{
+  display:flex;align-items:center;gap:0;
+  background:rgba(255,255,255,0.55);
+  border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;
+  margin-left:24px;
+}
+.g-stat{
+  display:flex;flex-direction:column;align-items:center;
+  padding:6px 18px;
+  border-right:1px solid var(--border);
+  gap:1px;
+}
+.g-stat:last-child{border-right:none}
+.g-sv{
+  font-family:var(--font-m);font-size:18px;font-weight:700;
+  color:var(--ink);line-height:1;
+}
+.g-sl{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+
+/* WPM gradient */
+.g-sv-wpm{
+  background:var(--grad-ranked);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.card-practice ~ #game-screen .g-sv-wpm,
+.g-sv-wpm.practice{ background:var(--grad-practice); }
+
+.g-abort{
+  width:36px;height:36px;border-radius:10px;
+  background:rgba(255,255,255,0.55);
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--muted);font-size:14px;
+  transition:background .15s,color .15s;
+  margin-left:12px;
+}
+.g-abort:hover{background:#fecaca;color:#be123c;border-color:#fca5a5;}
+
+/* Game main */
+.g-main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:0 48px;
+  gap:32px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* Mode pill */
+.g-mode-pill{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--font-b);font-size:12px;font-weight:600;
+  color:var(--muted);letter-spacing:.04em;text-transform:uppercase;
+}
+.g-mode-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--grad-ranked);
+}
+
+/* Progress bar */
+.g-progress-track{
+  width:min(700px,100%);
+  height:3px;
+  background:rgba(124,58,237,0.12);
+  border-radius:99px;
+  overflow:hidden;
+}
+.g-progress-fill{
+  height:100%;
+  background:var(--grad-ranked);
+  border-radius:99px;
+  width:0%;
+  transition:width .1s linear;
+}
+
+/* Text zone */
+.g-text-zone{
+  width:min(700px,100%);
+  position:relative;
+}
+
+.g-text-box{
+  background:rgba(255,255,255,0.65);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:32px 36px;
+  backdrop-filter:blur(12px);
+  box-shadow:0 8px 40px rgba(124,58,237,0.08);
+  position:relative;
+  overflow:hidden;
+}
+
+/* The text rendering */
+.g-text-box{
+  max-height:152px; /* ~3 lignes */
+  overflow:hidden;
+  scroll-behavior:smooth;
+}
+.g-text{
+  font-family:var(--font-m);
+  font-size:22px;
+  line-height:1.9;
+  letter-spacing:0.01em;
+  color:rgba(27,22,64,0.22);
+  user-select:none;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+.ch{}
+.ch-done{ color:var(--ink); }
+.ch-done.ranked { color:#7c3aed; }
+.ch-done.practice{ color:#0891b2; }
+.ch-done.endless { color:#ea580c; }
+.ch-done.boss    { color:#c4b5fd; } /* violet clair, visible sur fond rouge */
+.ch-err{
+  color:#ef4444;
+  background:rgba(239,68,68,0.12);
+  border-radius:3px;
+}
+.ch-cursor{
+  position:relative;
+}
+.ch-cursor::before{
+  content:'';
+  position:absolute;
+  left:-1px;top:2px;bottom:2px;
+  width:2px;
+  background:var(--grad-ranked);
+  border-radius:99px;
+  animation:blink .9s ease-in-out infinite;
+}
+@keyframes blink{0%,35%,100%{opacity:1}55%,85%{opacity:0}}
+
+/* Hidden real input */
+.g-input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+  width:1px;height:1px;
+  left:-9999px;
+}
+
+/* Bottom hint */
+.g-hint{
+  font-family:var(--font-b);font-size:12px;font-weight:500;
+  color:var(--muted);
+  display:flex;align-items:center;gap:6px;
+}
+.g-hint kbd{
+  background:rgba(255,255,255,0.7);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:2px 8px;
+  font-family:var(--font-m);font-size:11px;
+  color:var(--ink);
+}
+
+/* ── COUNTDOWN — couvre tout le g-main ── */
+.g-countdown{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:8px;
+  background:rgba(237,233,255,0.95);
+  backdrop-filter:blur(12px);
+  z-index:20;
+  transition:opacity .35s;
+}
+.g-countdown.hidden{
+  opacity:0;
+  pointer-events:none;
+}
+.g-cd-num{
+  font-family:var(--font-d);font-weight:800;
+  font-size:80px;line-height:1;
+  background:var(--grad-ranked);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:cd-pop .5s var(--ease) both;
+}
+@keyframes cd-pop{from{transform:scale(1.5);opacity:0}to{transform:scale(1);opacity:1}}
+.g-cd-lbl{
+  font-family:var(--font-b);font-size:13px;font-weight:600;
+  color:var(--muted);letter-spacing:.06em;text-transform:uppercase;
+}
+
+/* ── RESULTS ── */
+.g-results{
+  display:none;
+  position:absolute;inset:0;
+  background:rgba(237,233,255,0.96);
+  backdrop-filter:blur(16px);
+  z-index:20;
+  flex-direction:column;align-items:center;justify-content:center;
+  gap:24px;
+  border-radius:20px;
+}
+.g-results.show{ display:flex; }
+.g-res-title{
+  font-family:var(--font-d);font-weight:800;font-size:14px;
+  color:var(--muted);letter-spacing:.08em;text-transform:uppercase;
+}
+.g-res-wpm{
+  font-family:var(--font-d);font-weight:800;font-size:72px;line-height:1;
+  background:var(--grad-ranked);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:in .5s var(--ease) both;
+}
+.g-res-sub{
+  font-family:var(--font-m);font-size:14px;color:var(--muted);
+  font-weight:600;letter-spacing:.04em;
+}
+.g-res-grid{
+  display:flex;gap:0;
+  background:rgba(255,255,255,0.7);
+  border:1px solid var(--border);border-radius:14px;overflow:hidden;
+}
+.g-res-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:14px 28px;
+  border-right:1px solid var(--border);
+}
+.g-res-item:last-child{border-right:none}
+.g-res-v{font-family:var(--font-m);font-size:22px;font-weight:700;color:var(--ink);}
+.g-res-l{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+.g-res-elo{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--font-m);font-size:15px;font-weight:700;
+  color:#22c55e;
+}
+.g-res-elo-num::before{content:'+'}
+.g-res-btns{
+  display:flex;gap:10px;
+}
+.g-res-btn{
+  padding:12px 28px;border-radius:12px;
+  font-family:var(--font-d);font-size:14px;font-weight:800;
+  letter-spacing:.01em;
+  transition:transform .2s var(--ease),box-shadow .2s;
+}
+.g-res-btn:hover{transform:scale(1.04)}
+.g-res-btn.primary{
+  background:var(--grad-ranked);color:#fff;
+  box-shadow:0 6px 24px rgba(124,58,237,.35);
+}
+.g-res-btn.secondary{
+  background:rgba(255,255,255,0.7);color:var(--ink);
+  border:1px solid var(--border);
+}
+
+/* ── BOSS BARS ── */
+.g-boss-bars{
+  width:min(700px,100%);
+  display:none;
+  flex-direction:column;
+  gap:10px;
+}
+.g-boss-bars.show{ display:flex; }
+.g-bar-row{
+  display:flex;align-items:center;gap:12px;
+}
+.g-bar-label{
+  font-family:var(--font-m);font-size:10px;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);width:44px;flex-shrink:0;
+}
+.g-bar-track{
+  flex:1;height:8px;border-radius:99px;
+  background:rgba(0,0,0,0.08);overflow:hidden;
+}
+.g-bar-fill{
+  height:100%;border-radius:99px;
+  transition:width .3s ease;
+}
+.g-bar-fill.boss{ background:var(--grad-boss); }
+.g-bar-fill.player{ background:#22c55e; }
+.g-bar-fill.player.low{ background:#ef4444; }
+.g-bar-val{
+  font-family:var(--font-m);font-size:11px;font-weight:700;
+  color:var(--ink);width:36px;text-align:right;flex-shrink:0;
+}
+.g-lives{
+  display:flex;gap:6px;align-items:center;
+}
+.g-life{
+  font-size:16px;
+  transition:transform .2s,opacity .2s;
+}
+.g-life.lost{ opacity:0.2; transform:scale(.8); }
+.g-life.recovered{
+  animation:life-recover .6s var(--ease) forwards;
+}
+@keyframes life-recover{
+  0%  { transform:scale(0.5); opacity:0.3; filter:brightness(3); }
+  60% { transform:scale(1.4); opacity:1;   filter:brightness(1.5); }
+  100%{ transform:scale(1);   opacity:1;   filter:brightness(1); }
+}
+
+/* ── Streak counter ── */
+.g-streak{
+  display:none;
+  align-items:center;gap:5px;
+  font-family:var(--font-m);font-size:11px;font-weight:700;
+  color:rgba(255,255,255,0.5);
+  transition:color .3s;
+}
+.g-streak.show{ display:flex; }
+.g-streak-val{ color:rgba(255,255,255,0.9); }
+.g-streak.hot .g-streak-val{ color:#4ade80; }
+
+/* ── Life recover toast ── */
+.boss-toast{
+  position:absolute;
+  top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);
+  background:rgba(34,197,94,0.15);
+  border:1px solid rgba(34,197,94,0.4);
+  color:#4ade80;
+  font-family:var(--font-d);font-size:15px;font-weight:800;
+  padding:10px 22px;border-radius:12px;
+  backdrop-filter:blur(8px);
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .2s, transform .3s var(--ease);
+  z-index:20;
+  white-space:nowrap;
+}
+
+/* ── PRACTICE WORD ZONE ── */
+.g-word-zone{
+  display:none;
+  flex-direction:column;align-items:center;
+  gap:20px;
+  width:min(700px,100%);
+}
+.g-word-zone.show{ display:flex; }
+.g-word-box{
+  background:rgba(255,255,255,0.65);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:48px 40px 40px;
+  text-align:center;
+  width:100%;
+  backdrop-filter:blur(12px);
+  box-shadow:0 8px 40px rgba(124,58,237,0.08);
+  position:relative;
+}
+.g-word-current{
+  font-family:var(--font-m);
+  font-size:48px;font-weight:700;
+  letter-spacing:.04em;
+  color:rgba(27,22,64,0.18);
+  line-height:1;
+  margin-bottom:20px;
+  user-select:none;
+}
+.g-word-next-row{
+  display:flex;gap:16px;justify-content:center;
+  flex-wrap:wrap;
+}
+.g-word-next-item{
+  font-family:var(--font-m);font-size:18px;font-weight:500;
+  color:rgba(27,22,64,0.2);letter-spacing:.03em;
+}
+.g-word-next-item:first-child{ color:rgba(27,22,64,0.35); }
+.g-word-stats{
+  display:flex;gap:24px;justify-content:center;
+}
+.g-word-stat{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+}
+.g-word-stat-val{
+  font-family:var(--font-m);font-size:22px;font-weight:700;
+  color:var(--ink);
+}
+.g-word-stat-lbl{
+  font-size:10px;font-weight:600;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.08em;
+}
+
+/* ─── BOSS SELECT SCREEN ────────────────── */
+#boss-screen{
+  display:none;position:fixed;inset:0;z-index:150;
+  background:var(--bg);flex-direction:column;height:100dvh;overflow:hidden;
+}
+#boss-screen.active{ display:flex; }
+.bs-header{
+  height:64px;flex-shrink:0;display:flex;align-items:center;gap:16px;
+  padding:0 28px;border-bottom:1px solid var(--border);
+  background:rgba(237,233,255,0.7);backdrop-filter:blur(20px);
+}
+.bs-back{ display:flex;align-items:center;gap:6px;font-family:var(--font-b);font-size:13px;font-weight:600;color:var(--muted);padding:6px 12px;border-radius:99px;transition:background .15s,color .15s; }
+.bs-back:hover{background:rgba(120,80,240,0.08);color:var(--ink);}
+.bs-title{ font-family:var(--font-d);font-weight:800;font-size:18px;color:var(--ink); }
+.bs-subtitle{ font-family:var(--font-m);font-size:12px;font-weight:600;color:var(--muted);margin-left:auto; }
+
+.bs-body{
+  flex:1;overflow-y:auto;
+  padding:28px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  align-content:start;
+}
+
+.bs-card{
+  border-radius:20px;overflow:hidden;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,0.65);
+  display:flex;flex-direction:column;
+  transition:transform .25s var(--ease),box-shadow .2s;
+  position:relative;
+}
+.bs-card:not(.bs-locked):hover{
+  transform:translateY(-5px);
+  box-shadow:0 16px 40px rgba(27,22,64,0.12);
+}
+.bs-card.bs-locked{ opacity:0.55;filter:grayscale(0.4); }
+.bs-card.bs-beaten{ border-color:rgba(34,197,94,0.35); }
+
+.bs-card-top{
+  padding:24px 20px 16px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  position:relative;
+}
+.bs-num{
+  position:absolute;top:12px;left:14px;
+  font-family:var(--font-m);font-size:10px;font-weight:700;
+  color:var(--muted);letter-spacing:.06em;
+}
+.bs-beaten-badge{
+  position:absolute;top:10px;right:12px;
+  font-size:16px;
+}
+.bs-emoji{
+  font-size:52px;line-height:1;
+  filter:drop-shadow(0 4px 12px rgba(27,22,64,0.15));
+}
+.bs-name{
+  font-family:var(--font-d);font-weight:800;font-size:16px;color:var(--ink);
+  text-align:center;
+}
+.bs-stars{ font-size:13px;letter-spacing:2px; }
+.bs-card-divider{ height:1px;background:var(--border); }
+.bs-card-body{ padding:14px 16px; }
+.bs-desc{
+  font-family:var(--font-b);font-size:12px;font-weight:500;color:var(--muted);
+  line-height:1.5;margin-bottom:12px;text-align:center;
+}
+.bs-tags{
+  display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;justify-content:center;
+}
+.bs-tag{
+  font-family:var(--font-m);font-size:9px;font-weight:700;
+  padding:3px 8px;border-radius:99px;letter-spacing:.04em;
+  background:rgba(124,58,237,0.08);color:#7c3aed;
+}
+.bs-tag.red{ background:rgba(190,18,60,0.08);color:#be123c; }
+.bs-tag.orange{ background:rgba(234,88,12,0.08);color:#ea580c; }
+.bs-btn{
+  width:100%;padding:10px;border-radius:12px;
+  font-family:var(--font-d);font-size:13px;font-weight:800;
+  color:#fff;cursor:pointer;border:none;
+  background:var(--grad-boss);
+  box-shadow:0 4px 16px rgba(190,18,60,.25);
+  transition:transform .2s var(--ease),opacity .15s;
+}
+.bs-btn:hover{ transform:scale(1.03);opacity:0.92; }
+.bs-btn:disabled{
+  background:rgba(0,0,0,0.08);color:var(--muted);
+  box-shadow:none;cursor:not-allowed;transform:none;
+}
+.bs-hp-bar{
+  height:4px;border-radius:99px;
+  margin-bottom:10px;overflow:hidden;
+  background:rgba(0,0,0,0.06);
+}
+.bs-hp-fill{ height:100%;border-radius:99px; }
+
+/* Boss fight header additions */
+.g-boss-name{
+  font-family:var(--font-d);font-weight:800;font-size:16px;
+  color:#fff;
+  text-shadow:0 2px 8px rgba(0,0,0,0.3);
+  margin-left:8px;
+}
+.g-boss-phase{
+  font-family:var(--font-m);font-size:10px;font-weight:700;
+  color:rgba(255,255,255,0.7);letter-spacing:.06em;text-transform:uppercase;
+}
+
+/* ─── ACHIEVEMENT TOAST ─────────────────── */
+#ach-toast-container{
+  position:fixed;bottom:24px;right:24px;z-index:9999;
+  display:flex;flex-direction:column-reverse;gap:10px;
+  pointer-events:none;
+}
+.ach-toast{
+  display:flex;align-items:center;gap:12px;
+  background:rgba(20,16,40,0.92);
+  border:1px solid rgba(212,175,55,0.35);
+  border-radius:10px;
+  padding:12px 14px;
+  box-shadow:0 16px 48px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06);
+  min-width:300px;max-width:340px;
+  pointer-events:auto;
+  transform:translateX(120%);
+  opacity:0;
+  animation:toast-in .4s var(--ease) forwards;
+  overflow:hidden;
+  position:relative;
+}
+.ach-toast::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,#d4af37,transparent);
+  animation:toast-shine 2s ease-in-out 0.5s forwards;
+  opacity:0;
+}
+@keyframes toast-shine{ 0%{opacity:0;transform:scaleX(0)} 30%{opacity:1} 100%{opacity:0;transform:scaleX(1)} }
+.ach-toast.out{
+  animation:toast-out .3s ease-in forwards;
+}
+@keyframes toast-in{  to{ transform:translateX(0); opacity:1; } }
+@keyframes toast-out{ to{ transform:translateX(120%); opacity:0; } }
+.ach-toast-icon{
+  font-size:32px;line-height:1;flex-shrink:0;
+  filter:drop-shadow(0 2px 6px rgba(212,175,55,0.4));
+}
+.ach-toast-body{ flex:1;min-width:0; }
+.ach-toast-label{
+  font-family:var(--font-b);font-size:9px;font-weight:700;
+  color:#d4af37;text-transform:uppercase;letter-spacing:.12em;
+  margin-bottom:3px;
+}
+.ach-toast-name{
+  font-family:var(--font-d);font-size:14px;font-weight:800;color:#fff;
+  margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.ach-toast-desc{
+  font-family:var(--font-b);font-size:10px;font-weight:500;
+  color:rgba(255,255,255,0.45);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.ach-toast-bar{
+  position:absolute;bottom:0;left:0;height:2px;
+  background:#d4af37;width:100%;
+  transform-origin:left;
+  animation:toast-bar var(--toast-dur,5s) linear forwards;
+}
+@keyframes toast-bar{ to{transform:scaleX(0)} }
+.ach-toast-close{
+  font-size:11px;color:rgba(255,255,255,0.3);cursor:pointer;flex-shrink:0;
+  padding:4px;border-radius:6px;transition:color .15s;pointer-events:auto;
+  line-height:1;
+}
+.ach-toast-close:hover{ color:rgba(255,255,255,0.8); }
+
+/* ─── ACHIEVEMENTS PANEL (voir tout) ────── */
+.ach-overlay{
+  position:fixed;inset:0;z-index:400;
+  background:rgba(27,22,64,0.45);
+  backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s var(--ease-s);
+}
+.ach-overlay.open{ opacity:1;pointer-events:auto; }
+.ach-panel{
+  background:#fff;
+  border-radius:26px;
+  width:min(680px,calc(100vw - 40px));
+  max-height:80vh;
+  display:flex;flex-direction:column;
+  box-shadow:0 32px 80px rgba(27,22,64,.22);
+  transform:scale(.92) translateY(16px);
+  transition:transform .35s var(--ease);
+  overflow:hidden;
+}
+.ach-overlay.open .ach-panel{ transform:scale(1) translateY(0); }
+.ach-panel-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px 16px;
+  border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.ach-panel-title{ font-family:var(--font-d);font-weight:800;font-size:18px;color:var(--ink); }
+.ach-panel-close{
+  width:30px;height:30px;border-radius:99px;
+  background:var(--bg);color:var(--muted);font-size:13px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s,color .15s;cursor:pointer;
+}
+.ach-panel-close:hover{ background:#fecaca;color:#be123c; }
+.ach-panel-body{ overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:24px; }
+.ach-category-title{
+  font-family:var(--font-m);font-size:11px;font-weight:700;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.08em;
+  margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.ach-category-title::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+.ach-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+}
+.ach-item{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:14px 8px 12px;border-radius:14px;
+  background:rgba(237,233,255,0.5);border:1px solid var(--border);
+  position:relative;transition:transform .2s var(--ease);
+  cursor:default;
+}
+.ach-item:hover:not(.ach-locked){ transform:translateY(-3px); }
+.ach-item.ach-locked{ opacity:0.35;filter:grayscale(1); }
+.ach-item-icon{ font-size:26px;line-height:1; }
+.ach-item-name{
+  font-family:var(--font-b);font-size:10px;font-weight:700;
+  color:var(--ink);text-align:center;line-height:1.3;
+}
+.ach-item-desc{
+  font-family:var(--font-b);font-size:9px;color:var(--muted);
+  text-align:center;line-height:1.3;
+}
+.ach-item-badge{
+  position:absolute;top:-5px;right:-5px;
+  background:linear-gradient(135deg,#7c3aed,#4338ca);
+  color:#fff;font-size:8px;font-weight:700;letter-spacing:.04em;
+  padding:2px 7px;border-radius:99px;text-transform:uppercase;
+}
+.ach-progress-bar{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 24px;border-top:1px solid var(--border);
+  flex-shrink:0;
+}
+.ach-prog-track{
+  flex:1;height:6px;border-radius:99px;
+  background:rgba(124,58,237,0.1);overflow:hidden;
+}
+.ach-prog-fill{
+  height:100%;border-radius:99px;
+  background:var(--grad-ranked);
+}
+.ach-prog-txt{
+  font-family:var(--font-m);font-size:11px;font-weight:700;color:var(--muted);
+  white-space:nowrap;
+}
+
+/* ─── PROFIL SCREEN ─────────────────────── */
+#profile-screen{
+  display:none;position:fixed;inset:0;z-index:150;
+  background:var(--bg);flex-direction:column;height:100dvh;overflow:hidden;
+}
+#profile-screen.active{ display:flex; }
+
+.pf-header{
+  height:64px;flex-shrink:0;display:flex;align-items:center;gap:16px;
+  padding:0 28px;border-bottom:1px solid var(--border);
+  background:rgba(237,233,255,0.7);backdrop-filter:blur(20px);
+}
+.pf-back{
+  display:flex;align-items:center;gap:6px;font-family:var(--font-b);font-size:13px;
+  font-weight:600;color:var(--muted);padding:6px 12px;border-radius:99px;
+  transition:background .15s,color .15s;
+}
+.pf-back:hover{background:rgba(120,80,240,0.08);color:var(--ink);}
+.pf-title{ font-family:var(--font-d);font-weight:800;font-size:18px;color:var(--ink); }
+
+.pf-body{
+  flex:1;overflow-y:auto;
+  padding:28px;
+  display:grid;
+  grid-template-columns:300px 1fr;
+  gap:20px;
+  align-content:start;
+}
+
+/* ── LEFT COLUMN ── */
+.pf-left{ display:flex;flex-direction:column;gap:16px; }
+
+/* Hero card */
+.pf-hero{
+  background:rgba(255,255,255,0.65);border:1px solid var(--border);
+  border-radius:22px;padding:28px 24px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  position:relative;overflow:hidden;
+}
+.pf-hero::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:80px;
+  background:var(--grad-ranked);opacity:0.12;
+}
+.pf-avatar{
+  width:72px;height:72px;border-radius:18px;
+  background:var(--grad-ranked);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-d);font-weight:800;font-size:32px;color:#fff;
+  box-shadow:0 8px 24px rgba(124,58,237,0.35);
+  position:relative;z-index:1;
+}
+.pf-username{
+  font-family:var(--font-d);font-weight:800;font-size:20px;color:var(--ink);
+  position:relative;z-index:1;
+}
+.pf-badge-row{
+  display:flex;align-items:center;gap:10px;
+  position:relative;z-index:1;
+}
+.pf-rank-badge{ width:36px;height:36px; }
+.pf-rank-name{
+  font-family:var(--font-m);font-size:13px;font-weight:700;color:#087048;
+}
+.pf-elo{
+  font-family:var(--font-m);font-size:13px;font-weight:700;color:var(--muted);
+}
+.pf-meta{
+  display:flex;gap:16px;
+  font-family:var(--font-b);font-size:11px;font-weight:500;color:var(--muted);
+  position:relative;z-index:1;
+}
+.pf-meta span{ display:flex;align-items:center;gap:4px; }
+
+/* Rank progress */
+.pf-rank-progress{
+  background:rgba(255,255,255,0.65);border:1px solid var(--border);
+  border-radius:18px;padding:18px 20px;
+}
+.pf-rp-title{
+  font-family:var(--font-b);font-size:11px;font-weight:700;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.06em;
+  margin-bottom:14px;
+}
+.pf-rp-row{
+  display:flex;align-items:center;gap:12px;margin-bottom:10px;
+}
+.pf-rp-badge{ width:32px;height:32px; }
+.pf-rp-track{
+  flex:1;height:8px;background:rgba(0,0,0,0.06);
+  border-radius:99px;overflow:hidden;
+}
+.pf-rp-fill{
+  height:100%;border-radius:99px;
+  background:linear-gradient(90deg,#28d888,#087048);
+  transition:width .6s var(--ease);
+}
+.pf-rp-labels{
+  display:flex;justify-content:space-between;
+  font-family:var(--font-m);font-size:10px;font-weight:700;color:var(--muted);
+}
+
+/* Stats mini */
+.pf-stats-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+}
+.pf-stat-card{
+  background:rgba(255,255,255,0.65);border:1px solid var(--border);
+  border-radius:14px;padding:14px 16px;
+}
+.pf-stat-val{
+  font-family:var(--font-m);font-size:22px;font-weight:700;color:var(--ink);
+  line-height:1;margin-bottom:4px;
+}
+.pf-stat-lbl{
+  font-family:var(--font-b);font-size:11px;font-weight:500;color:var(--muted);
+}
+.pf-stat-val.grad{
+  background:var(--grad-ranked);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+/* ── RIGHT COLUMN ── */
+.pf-right{ display:flex;flex-direction:column;gap:16px; }
+
+.pf-section{
+  background:rgba(255,255,255,0.65);border:1px solid var(--border);
+  border-radius:18px;padding:20px 22px;
+}
+.pf-section-title{
+  font-family:var(--font-b);font-size:11px;font-weight:700;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.06em;
+  margin-bottom:16px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+
+/* WPM Chart */
+.pf-chart{ width:100%;height:100px;position:relative; }
+.pf-chart-svg{ width:100%;height:100%; }
+
+/* Heatmap */
+.pf-heatmap{
+  display:flex;gap:3px;overflow-x:auto;
+}
+.pf-heatmap-col{ display:flex;flex-direction:column;gap:3px; }
+.pf-heatmap-cell{
+  width:11px;height:11px;border-radius:2px;
+  background:rgba(40,216,136,0.08);
+  transition:transform .1s;cursor:default;
+}
+.pf-heatmap-cell:hover{ transform:scale(1.4); }
+.pf-heatmap-cell.l1{ background:rgba(40,216,136,0.2); }
+.pf-heatmap-cell.l2{ background:rgba(40,216,136,0.45); }
+.pf-heatmap-cell.l3{ background:rgba(40,216,136,0.7); }
+.pf-heatmap-cell.l4{ background:rgba(40,216,136,0.95); }
+
+/* Achievements */
+.pf-achievements{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+}
+.pf-ach{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:14px 8px;border-radius:14px;
+  background:rgba(255,255,255,0.5);border:1px solid var(--border);
+  transition:transform .2s var(--ease);cursor:default;
+  position:relative;
+}
+.pf-ach:hover{ transform:translateY(-3px); }
+.pf-ach.locked{ opacity:0.4;filter:grayscale(1); }
+.pf-ach-icon{ font-size:28px;line-height:1; }
+.pf-ach-name{
+  font-family:var(--font-b);font-size:10px;font-weight:700;
+  color:var(--ink);text-align:center;line-height:1.3;
+}
+.pf-ach-desc{
+  font-family:var(--font-b);font-size:9px;font-weight:500;
+  color:var(--muted);text-align:center;line-height:1.3;
+}
+.pf-ach-new{
+  position:absolute;top:-4px;right:-4px;
+  background:#22c55e;color:#fff;
+  font-size:8px;font-weight:700;letter-spacing:.04em;
+  padding:2px 6px;border-radius:99px;text-transform:uppercase;
+}
+
+/* Historique inline */
+.pf-history-list{ display:flex;flex-direction:column;gap:6px; }
+.pf-h-row{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 12px;border-radius:10px;
+  background:rgba(255,255,255,0.5);border:1px solid var(--border);
+}
+.pf-h-badge{ width:28px;height:28px; }
+.pf-h-wpm{ font-family:var(--font-m);font-size:14px;font-weight:700;color:var(--ink);flex:1; }
+.pf-h-acc{ font-family:var(--font-m);font-size:11px;font-weight:600;color:var(--muted); }
+.pf-h-date{ font-family:var(--font-b);font-size:11px;color:var(--muted);width:80px;text-align:right; }
+.pf-h-elo{ font-family:var(--font-m);font-size:13px;font-weight:700;width:36px;text-align:right; }
+
+/* ─── CLASSEMENT SCREEN ─────────────────── */
+#lb-screen{
+  display:none;
+  position:fixed;inset:0;z-index:150;
+  background:var(--bg);
+  flex-direction:column;
+  height:100dvh;overflow:hidden;
+}
+#lb-screen.active{ display:flex; }
+
+.lb-header{
+  height:64px;flex-shrink:0;
+  display:flex;align-items:center;gap:16px;
+  padding:0 28px;
+  border-bottom:1px solid var(--border);
+  background:rgba(237,233,255,0.7);
+  backdrop-filter:blur(20px);
+}
+.lb-back{
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--font-b);font-size:13px;font-weight:600;
+  color:var(--muted);padding:6px 12px;border-radius:99px;
+  transition:background .15s,color .15s;
+}
+.lb-back:hover{background:rgba(120,80,240,0.08);color:var(--ink);}
+.lb-title{
+  font-family:var(--font-d);font-weight:800;font-size:18px;color:var(--ink);
+}
+.lb-tabs{
+  display:flex;gap:4px;margin-left:auto;
+  background:rgba(255,255,255,0.55);
+  border:1px solid var(--border);
+  border-radius:99px;padding:3px;
+}
+.lb-tab{
+  font-family:var(--font-b);font-size:12px;font-weight:600;
+  padding:5px 16px;border-radius:99px;
+  color:var(--muted);
+  transition:background .15s,color .15s;
+}
+.lb-tab.active{background:var(--grad-ranked);color:#fff;
+  background:linear-gradient(135deg,#7c3aed,#4338ca);}
+.lb-tab:hover:not(.active){color:var(--ink);}
+
+.lb-body{
+  flex:1;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+
+/* ── Tab contenu ── */
+.lb-pane{ display:none;flex:1;overflow:hidden;flex-direction:column; }
+.lb-pane.show{ display:flex; }
+
+/* ── TOP 100 ── */
+.lb-user-bar{
+  flex-shrink:0;
+  display:flex;align-items:center;gap:14px;
+  padding:10px 28px;
+  background:rgba(124,58,237,0.06);
+  border-bottom:1px solid var(--border);
+  font-family:var(--font-m);font-size:12px;
+}
+.lb-user-pos{
+  font-size:14px;font-weight:700;color:var(--muted);width:36px;
+}
+.lb-user-info{ flex:1; }
+.lb-user-name{ font-weight:700;color:var(--ink); }
+.lb-user-elo{ color:var(--muted);font-size:11px; }
+.lb-you{ font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  background:var(--grad-ranked);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+.lb-list-wrap{ flex:1;overflow-y:auto;padding:0 16px 16px; }
+
+.lb-row{
+  display:flex;align-items:center;gap:14px;
+  padding:10px 12px;border-radius:12px;
+  transition:background .12s;
+  cursor:default;
+}
+.lb-row:hover{ background:rgba(255,255,255,0.55); }
+.lb-row.champion-row{ background:rgba(176,96,248,0.05); }
+.lb-row.champion-row:hover{ background:rgba(176,96,248,0.1); }
+.lb-pos{
+  font-family:var(--font-m);font-size:13px;font-weight:700;
+  color:var(--muted);width:32px;text-align:right;flex-shrink:0;
+}
+.lb-pos.gold-pos{ color:#c07808; }
+.lb-pos.silver-pos{ color:#6888a0; }
+.lb-pos.bronze-pos{ color:#9c5820; }
+.lb-badge-img{ width:32px;height:32px;flex-shrink:0; }
+.lb-name{
+  flex:1;font-family:var(--font-b);font-size:13px;font-weight:600;color:var(--ink);
+  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.lb-rank-name{
+  font-size:10px;font-weight:600;color:var(--muted);
+  margin-top:1px;
+}
+.lb-elo{
+  font-family:var(--font-m);font-size:14px;font-weight:700;
+  color:var(--ink);width:80px;text-align:right;flex-shrink:0;
+}
+.lb-wpm{
+  font-family:var(--font-m);font-size:12px;font-weight:600;
+  color:var(--muted);width:60px;text-align:right;flex-shrink:0;
+}
+.lb-sep{
+  height:1px;background:var(--border);margin:2px 12px;
+}
+
+/* ── RANGS TAB ── */
+.lb-ranks-wrap{
+  flex:1;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.lb-ranks-row{
+  display:flex;align-items:flex-end;justify-content:center;
+  gap:8px;
+  padding:32px 28px 20px;
+  overflow-x:auto;
+  flex-shrink:0;
+}
+.lb-rank-item{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  cursor:pointer;
+  padding:12px 10px 10px;
+  border-radius:16px;
+  transition:background .15s, transform .25s var(--ease);
+  border:2px solid transparent;
+  min-width:80px;
+}
+.lb-rank-item:hover{ background:rgba(255,255,255,0.5); transform:translateY(-4px); }
+.lb-rank-item.selected{
+  background:rgba(255,255,255,0.75);
+  border-color:var(--rc);
+  transform:translateY(-6px);
+  box-shadow:0 8px 24px rgba(27,22,64,0.1);
+}
+.lb-rank-badge{ filter:drop-shadow(0 4px 12px rgba(27,22,64,0.2)); }
+/* Taille progressive Bronze(petit)→Champion(grand) */
+.lb-rank-item:nth-child(1) .lb-rank-badge{ width:48px;height:48px; }
+.lb-rank-item:nth-child(2) .lb-rank-badge{ width:56px;height:56px; }
+.lb-rank-item:nth-child(3) .lb-rank-badge{ width:64px;height:64px; }
+.lb-rank-item:nth-child(4) .lb-rank-badge{ width:72px;height:72px; }
+.lb-rank-item:nth-child(5) .lb-rank-badge{ width:80px;height:80px; }
+.lb-rank-item:nth-child(6) .lb-rank-badge{ width:88px;height:88px; }
+.lb-rank-item:nth-child(7) .lb-rank-badge{ width:94px;height:94px; }
+.lb-rank-item:nth-child(8) .lb-rank-badge{ width:102px;height:102px; }
+.lb-rank-title{
+  font-family:var(--font-m);font-weight:700;font-size:10px;
+  color:var(--muted);letter-spacing:.06em;text-transform:uppercase;
+  text-align:center;
+}
+.lb-rank-item.selected .lb-rank-title{ color:var(--ink); }
+
+/* Detail panel */
+.lb-rank-detail{
+  flex:1;
+  margin:0 28px 24px;
+  background:rgba(255,255,255,0.65);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:24px 28px;
+  display:flex;align-items:center;gap:24px;
+  transition:opacity .2s;
+}
+.lb-rank-detail-badge{ width:80px;height:80px;flex-shrink:0;filter:drop-shadow(0 6px 16px rgba(27,22,64,0.2)); }
+.lb-rank-detail-info{ flex:1; }
+.lb-rank-detail-title{
+  font-family:var(--font-d);font-weight:800;font-size:24px;color:var(--ink);
+  margin-bottom:4px;
+}
+.lb-rank-detail-range{
+  font-family:var(--font-m);font-size:12px;font-weight:700;
+  margin-bottom:10px;
+}
+.lb-rank-detail-desc{
+  font-family:var(--font-b);font-size:14px;font-weight:500;
+  color:var(--muted);line-height:1.6;
+}
+.lb-rank-detail-bar{
+  height:4px;border-radius:99px;margin-top:14px;
+  background:var(--border);overflow:hidden;
+}
+.lb-rank-detail-fill{ height:100%;border-radius:99px; transition:width .4s var(--ease); }
+.lb-rank-detail-pct{
+  font-family:var(--font-m);font-size:11px;font-weight:700;
+  color:var(--muted);margin-top:6px;
+}
+.lb-rank-elo-range,.lb-rank-desc,.lb-rank-pill{ display:none; }
+
+/* ─── HISTORIQUE PANEL ───────────────────── */
+.history-overlay{
+  position:fixed;inset:0;z-index:300;
+  background:rgba(27,22,64,0.4);
+  backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s var(--ease-s);
+}
+.history-overlay.open{ opacity:1;pointer-events:auto; }
+.history-panel{
+  background:#fff;
+  border-radius:24px;
+  width:min(520px,calc(100vw - 40px));
+  max-height:70vh;
+  display:flex;flex-direction:column;
+  box-shadow:0 32px 80px rgba(27,22,64,.2);
+  transform:scale(.92) translateY(16px);
+  transition:transform .35s var(--ease);
+  border:1px solid rgba(255,255,255,0.6);
+  overflow:hidden;
+}
+.history-overlay.open .history-panel{ transform:scale(1) translateY(0); }
+.history-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px 16px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.history-title{
+  font-family:var(--font-d);font-weight:800;font-size:18px;color:var(--ink);
+}
+.history-close{
+  width:30px;height:30px;border-radius:99px;
+  background:var(--bg);color:var(--muted);
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+  transition:background .15s,color .15s;
+}
+.history-close:hover{background:#fecaca;color:#be123c;}
+.history-body{
+  overflow-y:auto;
+  flex:1;
+  padding:12px 16px;
+}
+.history-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:48px 24px;gap:10px;
+  color:var(--muted);font-size:14px;font-weight:500;
+}
+.history-empty span{ font-size:32px; }
+.h-match{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 8px;
+  border-bottom:1px solid var(--border);
+  transition:background .15s;
+  border-radius:10px;
+}
+.h-match:hover{ background:rgba(124,58,237,0.04); }
+.h-match:last-child{ border-bottom:none; }
+.h-match-badge{
+  width:36px;height:36px;flex-shrink:0;
+}
+.h-match-info{
+  flex:1;min-width:0;
+}
+.h-match-row1{
+  display:flex;align-items:center;gap:8px;margin-bottom:3px;
+}
+.h-match-wpm{
+  font-family:var(--font-m);font-size:16px;font-weight:700;color:var(--ink);
+}
+.h-match-acc{
+  font-family:var(--font-m);font-size:12px;font-weight:500;color:var(--muted);
+}
+.h-match-date{
+  font-family:var(--font-b);font-size:11px;color:var(--muted);font-weight:500;
+}
+.h-match-elo{
+  font-family:var(--font-m);font-size:15px;font-weight:700;
+  flex-shrink:0;
+}
+.h-match-elo.pos{ color:#22c55e; }
+.h-match-elo.neg{ color:#ef4444; }
+
+/* ─── MODAL ──────────────────────────────── */
+.overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(27,22,64,0.4);
+  backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s var(--ease-s);
+}
+.overlay.open{opacity:1;pointer-events:auto}
+.modal{
+  background:#fff;
+  border-radius:28px;
+  padding:36px 32px 28px;
+  width:min(420px,calc(100vw - 40px));
+  display:flex;flex-direction:column;align-items:center;
+  box-shadow:0 32px 80px rgba(27,22,64,.2);
+  transform:scale(.88) translateY(20px);
+  transition:transform .35s var(--ease);
+  position:relative;
+  border:1px solid rgba(255,255,255,0.6);
+}
+.overlay.open .modal{transform:scale(1) translateY(0)}
+.modal-x{
+  position:absolute;top:14px;right:14px;
+  width:30px;height:30px;border-radius:99px;
+  background:var(--bg);color:var(--muted);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;
+  transition:background .15s,color .15s;
+}
+.modal-x:hover{background:var(--border);color:var(--ink)}
+
+.m-icon-wrap{
+  width:90px;height:90px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:46px;
+  margin-bottom:20px;
+  box-shadow:0 8px 30px rgba(0,0,0,.12);
+}
+.m-title{
+  font-family:var(--font-d);font-weight:800;
+  font-size:26px;letter-spacing:-.03em;
+  text-align:center;margin-bottom:8px;
+}
+.m-desc{
+  font-size:14px;font-weight:500;
+  color:var(--muted);text-align:center;
+  line-height:1.65;margin-bottom:22px;max-width:320px;
+}
+.m-stats{
+  width:100%;display:flex;
+  background:var(--bg);border-radius:14px;
+  margin-bottom:20px;overflow:hidden;
+}
+.m-stat{
+  flex:1;padding:14px 10px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  border-right:1px solid var(--border);
+}
+.m-stat:last-child{border-right:none}
+.m-sv{font-family:var(--font-m);font-size:18px;font-weight:700;color:var(--ink)}
+.m-sl{font-size:11px;color:var(--muted);font-weight:500}
+.m-btn{
+  width:100%;padding:14px;border-radius:12px;
+  color:#fff;font-family:var(--font-d);
+  font-size:16px;font-weight:800;
+  letter-spacing:.01em;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:transform .2s var(--ease),box-shadow .2s;
+}
+.m-btn:hover{transform:scale(1.03)}
+.m-btn:active{transform:scale(.97)}
+
+  
+/* ══════════════════════════════════════════
+   ANIMATIONS GLOBALES
+══════════════════════════════════════════ */
+
+/* ── Transitions d'écrans ── */
+#profile-screen.active,
+#lb-screen.active,
+#boss-screen.active {
+  animation:screen-in .35s cubic-bezier(0.16,1,0.3,1) both;
+}
+#game-screen.active {
+  animation:screen-in .28s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes screen-in {
+  from { opacity:0; transform:translateY(10px); }
+}
+
+/* ── Résultats de partie ── */
+#g-results.show {
+  animation:results-in .4s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes results-in {
+  from { opacity:0; transform:scale(.96) translateY(8px); }
+}
+
+/* ── Caractère tapé (micro-rebond) ── */
+@keyframes char-land {
+  from { opacity:.4; transform:translateY(-3px) scale(1.1); }
+}
+.ch-done {
+  animation:char-land .18s cubic-bezier(0.34,1.56,0.64,1);
+}
+.ch-err {
+  animation:char-err .2s ease-out;
+}
+@keyframes char-err {
+  0%,100% { transform:translateX(0); }
+  30%     { transform:translateX(-3px); }
+  70%     { transform:translateX(3px); }
+}
+
+/* ── Shimmer sur les cartes bento au hover ── */
+.gcard::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:linear-gradient(
+    110deg,
+    transparent 35%,
+    rgba(255,255,255,0.1) 50%,
+    transparent 65%
+  );
+  transform:translateX(-100%);
+  transition:transform .65s cubic-bezier(0.16,1,0.3,1);
+  pointer-events:none;
+  z-index:3;
+}
+.gcard:hover::after { transform:translateX(120%); }
+
+/* ── Pop du compteur WPM live ── */
+@keyframes stat-pop {
+  0%   { transform:scale(1); }
+  45%  { transform:scale(1.2); }
+  100% { transform:scale(1); }
+}
+.stat-popping { animation:stat-pop .25s cubic-bezier(0.34,1.56,0.64,1); }
+
+/* ── Bump du streak ── */
+@keyframes streak-bump {
+  0%   { transform:scale(1); }
+  50%  { transform:scale(1.35); color:#4ade80; }
+  100% { transform:scale(1); }
+}
+.streak-bumping { animation:streak-bump .3s cubic-bezier(0.34,1.56,0.64,1); }
+
+/* ── Flash HP boss lors d'un dégât ── */
+@keyframes hp-hit {
+  0%,100% { filter:brightness(1); }
+  40%     { filter:brightness(2) saturate(1.5); }
+}
+.hp-hitting { animation:hp-hit .3s ease-in-out; }
+
+/* ── Entrée du profil (colonnes) ── */
+@keyframes pf-col-in {
+  from { opacity:0; transform:translateY(18px); }
+}
+
+/* ── Barre de progression ELO (profil) ── */
+@keyframes bar-grow {
+  from { transform:scaleX(0); }
+}
+
+/* ── Hover glow sur la pill de rang ── */
+.h-pill {
+  transition:box-shadow .25s ease, transform .2s var(--ease);
+}
+.h-pill:hover {
+  box-shadow:0 0 0 3px rgba(124,58,237,0.18);
+  transform:translateY(-1px);
+}
+
+/* ── Micro-press boutons ── */
+.card-btn:active, .g-res-btn:active, .bs-btn:active, .h-nav-link:active {
+  transform:scale(.95) !important;
+  transition:transform .08s ease !important;
+}
+
+/* ── Navigation active underline smooth ── */
+.h-nav-link {
+  transition:color .15s, background .15s, transform .12s;
+}
+
+
+/* ══ RANK-UP OVERLAY ══════════════════════════════════════════════ */
+#rankup-overlay {
+  display:none;
+  position:fixed;inset:0;z-index:500;
+  align-items:center;justify-content:center;
+}
+#rankup-overlay.active { display:flex; }
+
+.ru-backdrop {
+  position:absolute;inset:0;
+  background:rgba(10,6,30,0.88);
+  backdrop-filter:blur(12px);
+  animation:ru-bg-in .4s ease both;
+}
+@keyframes ru-bg-in { from{opacity:0} }
+
+.ru-content {
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;align-items:center;gap:28px;
+  animation:ru-content-in .5s cubic-bezier(0.16,1,0.3,1) both .15s;
+}
+@keyframes ru-content-in {
+  from { opacity:0; transform:scale(.88) translateY(20px); }
+}
+
+.ru-label {
+  font-family:var(--font-d);font-size:13px;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,255,255,0.5);
+}
+
+.ru-badges {
+  display:flex;align-items:center;gap:32px;
+}
+
+.ru-badge-wrap {
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+
+.ru-badge-wrap img {
+  width:96px;height:96px;object-fit:contain;
+}
+.ru-old img {
+  opacity:.45;filter:grayscale(.5);
+  animation:ru-old-out .6s cubic-bezier(0.16,1,0.3,1) both .3s;
+}
+@keyframes ru-old-out {
+  from { opacity:.8; transform:scale(1.1); }
+  to   { opacity:.35; transform:scale(.85); }
+}
+.ru-new img {
+  filter:drop-shadow(0 0 24px rgba(212,175,55,0.7)) drop-shadow(0 0 60px rgba(212,175,55,0.35));
+  animation:ru-new-in .7s cubic-bezier(0.34,1.56,0.64,1) both .5s;
+}
+@keyframes ru-new-in {
+  from { opacity:0; transform:scale(.5) rotate(-8deg); }
+}
+
+.ru-badge-wrap span {
+  font-family:var(--font-d);font-size:15px;font-weight:800;color:#fff;
+  letter-spacing:.02em;
+}
+.ru-old span { opacity:.4; font-size:13px; }
+.ru-new span {
+  font-size:20px;
+  background:linear-gradient(135deg,#d4af37,#f5e07a,#d4af37);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:ru-name-in .5s cubic-bezier(0.16,1,0.3,1) both .7s;
+}
+@keyframes ru-name-in { from{opacity:0;transform:translateY(8px)} }
+
+.ru-arrow {
+  font-size:28px;color:rgba(255,255,255,0.25);
+  animation:ru-arrow-in .4s ease both .45s;
+}
+@keyframes ru-arrow-in { from{opacity:0;transform:translateX(-8px)} }
+
+.ru-sub {
+  font-family:var(--font-b);font-size:12px;font-weight:500;
+  color:rgba(255,255,255,0.35);letter-spacing:.06em;text-transform:uppercase;
+  animation:ru-name-in .5s ease both .85s;
+}
+
+/* Particules */
+.ru-particle {
+  position:absolute;
+  width:6px;height:6px;border-radius:50%;
+  background:#d4af37;
+  animation:ru-particle var(--dur,.8s) var(--ease-s) both var(--delay,0s);
+  pointer-events:none;
+}
+@keyframes ru-particle {
+  from { opacity:1; transform:translate(0,0) scale(1); }
+  to   { opacity:0; transform:translate(var(--tx,0px),var(--ty,-60px)) scale(0); }
+}
+.ru-particles { position:absolute;inset:0;pointer-events:none; }
+
+
+.lb-row-you {
+  background:rgba(124,58,237,0.08);
+  border-left:3px solid #7c3aed;
+}
+
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">APM<em>.gg</em></div>
+    <nav class="h-nav">
+      <button class="h-nav-link active">Accueil</button>
+      <button class="h-nav-link" onclick="openLB()">Classement</button>
+      <button class="h-nav-link" onclick="openHistory()">Historique</button>
+      <button class="h-nav-link" onclick="openProfile()">Profil</button>
+    </nav>
+    <div class="h-right">
+      <div class="h-pill">
+        <div class="live-dot"></div>
+        <span style="color:var(--muted);font-size:11px">2 847 en ligne</span>
+      </div>
+      <div class="h-pill" style="gap:10px;padding:5px 12px 5px 5px;">
+        <img id="h-rank-img" src="assets/ranks/svg/bronze.svg" alt="Rang" style="width:28px;height:28px;object-fit:contain;flex-shrink:0;">
+        <div style="display:flex;flex-direction:column;gap:1px;">
+          <span id="h-rank-name" class="rank" style="font-size:11px;line-height:1;">Bronze</span>
+          <span id="h-rank-elo" style="font-size:12px;font-weight:700;color:var(--ink);line-height:1;">0 ELO</span>
+        </div>
+      </div>
+      <div class="h-avatar" onclick="openProfile()" style="cursor:pointer" title="Profil">M</div>
+    </div>
+  </header>
+
+  <!-- BENTO GRID -->
+  <div class="bento">
+
+    <!-- RANKED — big, col 1-2 row 1 -->
+    <div class="gcard card-ranked" onclick="launchGame('ranked')" style="cursor:pointer">
+      <span class="card-badge">🔥 Populaire</span>
+      <div class="card-icon">⚔️</div>
+      <div class="card-content">
+        <div class="card-eyebrow">Mode compétitif · 892 en file</div>
+        <h2 class="card-title">Ranked</h2>
+        <p class="card-desc">Matchmaking 1v1 basé sur ton ELO. Chaque partie modifie ton rang. Le vrai test.</p>
+        <div class="ranked-stats">
+          <div class="rs-item" style="flex-direction:row;align-items:center;gap:10px;">
+            <img id="rs-rank-img" src="assets/ranks/svg/bronze.svg" alt="Rang" style="width:44px;height:44px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.3));">
+            <div>
+              <div id="rs-rank-name" class="rs-val" style="font-size:17px;">Bronze</div>
+              <div id="rs-rank-elo" class="rs-lbl">0 ELO</div>
+            </div>
+          </div>
+          <div class="rs-item">
+            <div id="rs-last-wpm" class="rs-val">— WPM</div>
+            <div class="rs-lbl">Dernière partie</div>
+          </div>
+          <div class="rs-item">
+            <div id="rs-last-elo-delta" class="rs-val">—</div>
+            <div class="rs-lbl">ELO gagné</div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="card-btn card-btn-primary" onclick="event.stopPropagation();launchGame('ranked')">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="currentColor"><path d="M2.5 1.5l9 5-9 5v-10z"/></svg>
+            Trouver un match
+          </button>
+          <button class="card-btn" onclick="event.stopPropagation();openHistory()">Historique</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE — col 3 row 1 -->
+    <div class="gcard card-practice" onclick="launchGame('practice')">
+      <div class="card-icon">✏️</div>
+      <div class="card-content">
+        <div class="card-eyebrow">Entraînement libre</div>
+        <h2 class="card-title">Practice</h2>
+        <p class="card-desc">Analyse de frappes, zéro pression.</p>
+        <div class="card-footer">
+          <button class="card-btn">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 1.5l8 4.5-8 4.5V1.5z"/></svg>
+            Lancer
+          </button>
+          <span class="card-stat"><span class="val">1 204</span> joueurs</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENDLESS — col 1 row 2 -->
+    <div class="gcard card-endless" onclick="launchGame('endless')">
+      <div class="card-icon">♾️</div>
+      <div class="card-content">
+        <div class="card-eyebrow">Survie · Nouveau</div>
+        <h2 class="card-title">Endless</h2>
+        <p class="card-desc">Les mots défilent sans s'arrêter.</p>
+        <div class="card-footer">
+          <button class="card-btn">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 1.5l8 4.5-8 4.5V1.5z"/></svg>
+            Survivre
+          </button>
+          <span class="card-stat"><span class="val">437</span> actifs</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOSS FIGHT — col 2-3 row 2 -->
+    <div class="gcard card-boss" onclick="openBossSelect()">
+      <span class="card-badge">Beta</span>
+      <div class="card-icon">💀</div>
+      <div class="card-content">
+        <div class="card-eyebrow">Combat narratif · 3/8 boss vaincus</div>
+        <h2 class="card-title">Boss Fight</h2>
+        <p class="card-desc">Ta vitesse est ton attaque. Vaincs les boss pour débloquer des récompenses exclusives.</p>
+        <div class="card-footer">
+          <button class="card-btn" onclick="event.stopPropagation();openBossSelect()">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 1.5l8 4.5-8 4.5V1.5z"/></svg>
+            Affronter
+          </button>
+          <button class="card-btn" onclick="event.stopPropagation();openBossSelect()" id="boss-beaten-btn">Boss vaincus (0)</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+</div>
+
+<!-- GAME SCREEN -->
+<div id="game-screen">
+
+  <!-- Game Header -->
+  <header class="g-header">
+    <div class="g-logo">APM<em>.gg</em></div>
+    <div class="g-mode-pill" id="g-mode-pill">
+      <span class="g-mode-dot" id="g-mode-dot"></span>
+      <span id="g-mode-label">Ranked · 1v1</span>
+    </div>
+
+    <div class="g-timer-wrap">
+      <div>
+        <div class="g-timer" id="g-timer">60</div>
+      </div>
+      <div class="g-timer-lbl">sec</div>
+    </div>
+
+    <div class="g-live-stats">
+      <div class="g-stat">
+        <span class="g-sv g-sv-wpm" id="g-wpm">0</span>
+        <span class="g-sl">WPM</span>
+      </div>
+      <div class="g-stat">
+        <span class="g-sv" id="g-acc">100%</span>
+        <span class="g-sl">ACC</span>
+      </div>
+    </div>
+
+    <button class="g-abort" onclick="abortGame()" title="Quitter (Esc)">✕</button>
+  </header>
+
+  <!-- Game Main -->
+  <div class="g-main">
+
+    <!-- Countdown — couvre tout le g-main -->
+    <div class="g-countdown" id="g-countdown">
+      <div class="g-cd-num" id="g-cd-num">3</div>
+      <div class="g-cd-lbl">Prêt ?</div>
+    </div>
+
+    <div class="g-progress-track">
+      <div class="g-progress-fill" id="g-progress"></div>
+    </div>
+
+    <!-- BOSS BARS (boss mode only) -->
+    <div class="g-boss-bars" id="g-boss-bars">
+      <div class="g-bar-row">
+        <span class="g-bar-label">Boss</span>
+        <div class="g-bar-track"><div class="g-bar-fill boss" id="g-boss-hp" style="width:100%"></div></div>
+        <span class="g-bar-val" id="g-boss-hp-val">100%</span>
+      </div>
+      <div class="g-bar-row">
+        <span class="g-bar-label">Vies</span>
+        <div class="g-lives" id="g-lives">
+          <span class="g-life">❤️</span>
+          <span class="g-life">❤️</span>
+          <span class="g-life">❤️</span>
+          <span class="g-life">❤️</span>
+          <span class="g-life">❤️</span>
+        </div>
+        <div class="g-streak" id="g-streak">
+          <span>🔥</span>
+          <span class="g-streak-val" id="g-streak-val">0</span>
+          <span style="opacity:.5">/ 100 lettres</span>
+        </div>
+      </div>
+    </div>
+    <div class="boss-toast" id="boss-toast"></div>
+
+    <!-- PRACTICE WORD ZONE (practice mode only) -->
+    <div class="g-word-zone" id="g-word-zone">
+      <div class="g-word-box" onclick="focusInput()">
+        <div class="g-word-current" id="g-word-current"></div>
+        <div class="g-word-next-row" id="g-word-next-row"></div>
+      </div>
+      <div class="g-word-stats">
+        <div class="g-word-stat">
+          <span class="g-word-stat-val" id="g-word-count">0</span>
+          <span class="g-word-stat-lbl">Mots</span>
+        </div>
+        <div class="g-word-stat">
+          <span class="g-word-stat-val" id="g-word-wpm">0</span>
+          <span class="g-word-stat-lbl">WPM</span>
+        </div>
+        <div class="g-word-stat">
+          <span class="g-word-stat-val" id="g-word-acc">100%</span>
+          <span class="g-word-stat-lbl">Précision</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-text-zone">
+
+      <!-- Results overlay -->
+      <div class="g-results" id="g-results">
+        <div class="g-res-title">Partie terminée</div>
+        <div class="g-res-wpm" id="g-res-wpm">0 <span style="font-size:32px;-webkit-text-fill-color:var(--muted);background:none;">WPM</span></div>
+        <div class="g-res-grid">
+          <div class="g-res-item">
+            <span class="g-res-v" id="g-res-acc">—</span>
+            <span class="g-res-l">Précision</span>
+          </div>
+          <div class="g-res-item">
+            <span class="g-res-v" id="g-res-chars">—</span>
+            <span class="g-res-l">Caractères</span>
+          </div>
+          <div class="g-res-item">
+            <span class="g-res-v" id="g-res-errors">—</span>
+            <span class="g-res-l">Erreurs</span>
+          </div>
+        </div>
+        <div class="g-res-elo">
+          <img id="g-res-rank-img" src="assets/ranks/svg/bronze.svg" style="width:28px;height:28px;object-fit:contain;">
+          <span id="g-res-rank-text">Bronze · 0</span>
+          <span class="g-res-elo-num" id="g-res-elo">+18</span>
+          <span style="color:var(--muted);font-weight:500;">ELO</span>
+        </div>
+        <div class="g-res-btns">
+          <button class="g-res-btn primary" onclick="restartGame()">↺ Rejouer</button>
+          <button class="g-res-btn secondary" id="g-res-back-btn" onclick="abortGame()">Accueil</button>
+        </div>
+      </div>
+
+      <!-- Text display -->
+      <div class="g-text-box" id="g-text-box" onclick="focusInput()">
+        <div class="g-text" id="g-text"></div>
+      </div>
+    </div>
+
+    <!-- Input toujours accessible (hors de tout conteneur display:none) -->
+    <input class="g-input" id="g-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+
+    <div class="g-hint">
+      Clique sur le texte ou appuie sur
+      <kbd>espace</kbd> pour commencer · <kbd>Esc</kbd> pour quitter
+    </div>
+
+  </div>
+</div>
+
+<!-- BOSS SELECT SCREEN -->
+<div id="boss-screen">
+  <header class="bs-header">
+    <button class="bs-back" onclick="closeBossSelect()">← Retour</button>
+    <div class="bs-title">Boss Fight</div>
+    <div class="bs-subtitle" id="bs-subtitle">0/8 boss vaincus</div>
+  </header>
+  <div class="bs-body" id="bs-body"></div>
+</div>
+
+<!-- ACHIEVEMENT TOASTS -->
+<div id="ach-toast-container"></div>
+
+<!-- ACHIEVEMENTS PANEL -->
+<div class="ach-overlay" id="ach-overlay" onclick="if(event.target===this)closeAchPanel()">
+  <div class="ach-panel">
+    <div class="ach-panel-header">
+      <div class="ach-panel-title">Tous les succès</div>
+      <button class="ach-panel-close" onclick="closeAchPanel()">✕</button>
+    </div>
+    <div class="ach-panel-body" id="ach-panel-body"></div>
+    <div class="ach-progress-bar">
+      <span class="ach-prog-txt" id="ach-prog-txt"></span>
+      <div class="ach-prog-track"><div class="ach-prog-fill" id="ach-prog-fill"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFIL SCREEN -->
+<div id="profile-screen">
+  <header class="pf-header">
+    <button class="pf-back" onclick="closeProfile()">← Retour</button>
+    <div class="pf-title">Profil</div>
+  </header>
+  <div class="pf-body" id="pf-body"></div>
+</div>
+
+<!-- CLASSEMENT SCREEN -->
+<div id="lb-screen">
+  <header class="lb-header">
+    <button class="lb-back" onclick="closeLB()">← Retour</button>
+    <div class="lb-title">Classement</div>
+    <div class="lb-tabs">
+      <button class="lb-tab active" onclick="switchLBTab('top')">🏆 Top 100</button>
+      <button class="lb-tab" onclick="switchLBTab('ranks')">🎖️ Rangs</button>
+    </div>
+  </header>
+
+  <div class="lb-body">
+
+    <!-- TOP 100 -->
+    <div class="lb-pane show" id="lb-pane-top">
+      <!-- Position du joueur -->
+      <div class="lb-user-bar">
+        <div class="lb-user-pos" id="lb-user-pos">#5000</div>
+        <img id="lb-rank-img" src="assets/ranks/svg/bronze.svg" style="width:28px;height:28px;">
+        <div class="lb-user-info">
+          <div class="lb-user-name">Matéo <span class="lb-you">Vous</span></div>
+          <div id="lb-user-elo-text" class="lb-user-elo">0 ELO · Bronze</div>
+        </div>
+        <div id="lb-user-elo-num" class="lb-elo">0</div>
+        <div id="lb-user-wpm" class="lb-wpm">— WPM</div>
+      </div>
+      <!-- Liste -->
+      <div class="lb-list-wrap" id="lb-list"></div>
+    </div>
+
+    <!-- RANGS -->
+    <div class="lb-pane" id="lb-pane-ranks">
+      <div class="lb-ranks-wrap">
+        <div class="lb-ranks-row" id="lb-ranks-row"></div>
+        <div class="lb-rank-detail" id="lb-rank-detail">
+          <img class="lb-rank-detail-badge" id="lb-detail-badge" src="" alt="">
+          <div class="lb-rank-detail-info">
+            <div class="lb-rank-detail-title" id="lb-detail-title"></div>
+            <div class="lb-rank-detail-range" id="lb-detail-range"></div>
+            <div class="lb-rank-detail-desc" id="lb-detail-desc"></div>
+            <div class="lb-rank-detail-bar">
+              <div class="lb-rank-detail-fill" id="lb-detail-fill"></div>
+            </div>
+            <div class="lb-rank-detail-pct" id="lb-detail-pct"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- HISTORIQUE RANKED -->
+<div class="history-overlay" id="history-overlay" onclick="if(event.target===this)closeHistory()">
+  <div class="history-panel">
+    <div class="history-header">
+      <div class="history-title">Historique Ranked</div>
+      <button class="history-close" onclick="closeHistory()">✕</button>
+    </div>
+    <div class="history-body" id="history-body">
+      <div class="history-empty">
+        <span>⚔️</span>
+        Aucune partie jouée pour le moment
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <button class="modal-x" onclick="closeOverlay()">✕</button>
+    <div class="m-icon-wrap" id="m-iw">
+      <span id="m-ico"></span>
+    </div>
+    <h2 class="m-title" id="m-title"></h2>
+    <p  class="m-desc"  id="m-desc"></p>
+    <div class="m-stats" id="m-stats"></div>
+    <button class="m-btn" id="m-btn"></button>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   GAME ENGINE — 4 MODES
+══════════════════════════════════════════ */
+
+/* ── Corpus de textes (Ranked / Endless / Boss) ── */
+const TEXTS = [
+  "Le clavier devient une extension de ta pensée. Chaque frappe est une intention, chaque mot un pas vers la maîtrise absolue de la vitesse.",
+  "La vitesse n'est rien sans la précision. Les meilleurs typistes du monde ne pensent pas aux touches, ils pensent aux mots, aux phrases, aux idées.",
+  "Dans l'arène du classement, chaque seconde compte. La différence entre la victoire et la défaite tient à quelques frappes bien placées.",
+  "L'entraînement quotidien forge les champions. Un seul exercice de vingt minutes par jour suffit à transformer ta vitesse de frappe en quelques semaines.",
+  "Les mots s'enchaînent comme des notes de musique. Le typiste expert joue sa partition sans hésitation, ses doigts sachant d'instinct où aller.",
+  "Respire. Concentre-toi. Les erreurs font partie du chemin. Chaque faute corrigée est une leçon gravée dans la mémoire musculaire de tes mains.",
+  "La lumière du soleil traversait les nuages en longues lignes dorées, illuminant la ville endormie d'une clarté douce et apaisante.",
+  "Il existe une satisfaction profonde à maîtriser quelque chose de difficile. La dactylographie est l'un de ces arts qui récompensent la patience.",
+  "Le café refroidissait lentement sur la table pendant qu'il lisait son livre favori, perdu dans un monde de mots et d'aventures imaginaires.",
+  "La technologie évolue à une vitesse vertigineuse. Ceux qui savent écrire vite et sans fautes gardent un avantage considérable sur les autres.",
+  "Dans les profondeurs de la forêt, le silence était total, interrompu seulement par le chant des oiseaux et le murmure du vent dans les feuilles.",
+  "Chaque championnat commence par un seul objectif : dépasser ses propres limites. La compétition n'est qu'un miroir tendu vers soi-même.",
+  "Les étoiles brillaient avec une intensité rare ce soir-là. Il leva les yeux vers le ciel et se demanda combien de mondes restaient encore à découvrir.",
+  "La précision est une discipline de l'esprit avant d'être une habileté des mains. Chaque geste compte, chaque décision façonne le résultat final.",
+  "Il faut du courage pour recommencer après un échec. Les grands champions sont ceux qui ont perdu le plus souvent et qui se sont relevés à chaque fois.",
+  "Le printemps apportait avec lui une énergie nouvelle. Les rues de la ville s'animaient, les terrasses se remplissaient, et les sourires revenaient.",
+  "Écrire vite est une chose. Écrire vite sans fautes en est une autre. C'est dans cet équilibre fragile que réside le vrai talent du dactylographe.",
+  "La montagne imposait sa silhouette sombre contre un ciel violet. Trois heures de marche encore, et ils atteindraient enfin le sommet tant convoité.",
+  "Les grandes idées naissent souvent dans le silence. Ce n'est pas dans l'agitation du monde, mais dans la concentration profonde que l'esprit crée.",
+  "Un bon développeur écrit du code que les machines comprennent. Un excellent développeur écrit du code que les humains peuvent lire et admirer.",
+  "La mer était calme ce matin-là, d'un bleu profond presque immobile. Les bateaux de pêche rentraient au port, chargés de leur récolte nocturne.",
+  "La mémoire musculaire se construit dans la répétition. Chaque heure passée à s'entraîner grave dans les doigts des automatismes durables.",
+  "Dans cent ans, personne ne se souviendra de nos erreurs quotidiennes. Ce qui restera, c'est ce que nous aurons construit avec patience et détermination.",
+  "Le marché du matin débordait de couleurs et de parfums. Les vendeurs appelaient les clients d'une voix forte, vantant leurs meilleurs produits.",
+  "La différence entre un amateur et un expert tient souvent à dix mille heures de pratique délibérée, de concentration et d'effort conscient.",
+  "Il pleuvait doucement sur les toits de Paris. Les passants pressaient le pas sous leurs parapluies, indifférents à la beauté mélancolique de la pluie.",
+  "Le silence entre deux notes est aussi important que la note elle-même. Dans la dactylographie, la pause entre deux mots crée le rythme naturel du texte.",
+  "Apprendre une nouvelle langue ouvre des portes que l'on ne soupçonnait même pas. Chaque mot nouveau est une clé vers un univers différent.",
+  "L'automne avait peint les arbres de rouge et d'or. Les feuilles tombaient une à une, dessinant sur le sol un tapis multicolore et fragile.",
+  "La concentration totale est un état rare et précieux. Quand elle survient, le temps s'efface et seule la tâche en cours existe dans l'univers entier.",
+  "Un seul mot bien placé peut changer le sens d'une phrase. C'est pourquoi la précision du langage est aussi précieuse que la rapidité de l'exécution.",
+  "Le train filait dans la nuit à grande vitesse. Par la fenêtre, les lumières des villages défilaient comme des étoiles filantes sur fond noir.",
+  "La persévérance est la qualité la plus sous-estimée du succès. Presque tout devient possible si l'on accepte de travailler longtemps sans se décourager.",
+  "Les oiseaux migrateurs parcourent des milliers de kilomètres guidés par un instinct mystérieux. La nature recèle encore bien des secrets impénétrables.",
+  "Dans chaque compétition, il y a un moment où les muscles brûlent et l'esprit veut abandonner. C'est précisément là que les champions se révèlent.",
+  "Le sable chaud de la plage brûlait sous les pieds. L'odeur d'iode et de sel flottait dans l'air tiède de cette fin d'après-midi d'été ensoleillé.",
+  "Les grandes bibliothèques sont des cathédrales du savoir. Entre leurs murs silencieux, des millions de voix attendent qu'on les lise pour revivre.",
+  "La cuisine est un art qui engage tous les sens. Le son du couteau sur la planche, les arômes qui montent, la texture sous les doigts, tout compte.",
+  "Chaque ligne de code est une décision. Un bon programme est celui où chaque décision a été prise avec soin, réflexion et respect du futur lecteur.",
+  "Le vent soufflait fort sur les falaises blanches. En bas, la mer se brisait avec fracas sur les rochers, projetant des gerbes d'écume argentée.",
+  "L'intelligence artificielle transforme notre rapport au monde du travail. Ceux qui sauront collaborer avec les machines auront un avantage décisif.",
+  "Les nuits d'hiver sont longues et froides, mais elles portent une beauté particulière. Le givre dessine des dentelles sur les vitres des maisons.",
+  "Le sport enseigne des valeurs que l'école peine à transmettre : le dépassement de soi, le respect de l'adversaire, et la gestion de l'échec.",
+  "Dans le brouhaha de la ville, il avait trouvé son refuge dans un petit café de quartier, entre une tasse de thé et un carnet de notes ouvert.",
+  "La photographie fige un instant que le temps aurait emporté. En un déclic, un souvenir devient éternel, une émotion devient tangible et partageable.",
+  "Savoir taper vite sans regarder le clavier est une compétence qui se développe. Les yeux sur l'écran, l'esprit sur le texte, les doigts sur les touches.",
+  "Les scientifiques estiment que l'univers contient plus d'étoiles que de grains de sable sur toutes les plages de la Terre. L'infini dépasse l'imagination.",
+  "Le jazz naît de l'improvisation et du dialogue entre musiciens. Chaque concert est unique, chaque note une conversation entre l'artiste et son public.",
+  "La route sinuait entre les vignes chargées de raisins mûrs. L'odeur sucrée de la vendange flottait dans l'air tiède de cette belle journée de septembre.",
+  "Une idée mal exprimée est une idée perdue. Prendre le temps de formuler clairement sa pensée est un investissement qui profite à celui qui écoute et à celui qui parle.",
+  "Les jeux vidéo compétitifs exigent une coordination parfaite entre l'oeil, le cerveau et les mains. Un entraînement rigoureux fait toute la différence.",
+  "La philosophie nous apprend à questionner ce que nous tenons pour acquis. Rien n'est évident, tout mérite d'être examiné avec soin et esprit critique.",
+  "Le feu de cheminée crépitait doucement dans le salon. Dehors, la neige recouvrait silencieusement le jardin d'un manteau blanc et immaculé.",
+  "Chaque jour est une occasion de progresser d'un pour cent. Ces petites améliorations quotidiennes finissent par produire des résultats spectaculaires.",
+  "Les dauphins communiquent par des séquences de clics et de sifflements complexes. Leur intelligence sociale fascine les chercheurs depuis des décennies.",
+  "La ville s'éveillait lentement. Les premières boulangeries ouvraient leurs volets, répandant dans la rue froide des matins une odeur de pain chaud.",
+  "La discipline n'est pas une contrainte imposée de l'extérieur. C'est une liberté que l'on se donne, le choix délibéré de rester fidèle à son objectif.",
+  "Le marathon est une métaphore de la vie. Ce n'est pas le plus rapide qui gagne, mais celui qui gère le mieux son énergie sur la totalité du parcours.",
+  "Les couleurs du crépuscule peignaient le ciel de nuances de rose et d'orange. La journée touchait à sa fin, laissant place à la douceur du soir.",
+  "Un clavier bien réglé, une posture correcte, un écran bien positionné : les détails ergonomiques font une grande différence sur le long terme.",
+  "La culture du feedback immédiat est au coeur de la progression rapide. Voir ses erreurs en temps réel et les corriger est la méthode la plus efficace.",
+  "Les fourmis travaillent sans relâche, coordonnées par des signaux chimiques invisibles. Leur organisation collective dépasse en efficacité bien des équipes humaines.",
+  "La mer Méditerranée a bercé les civilisations les plus anciennes. Ses rives ont vu naître l'écriture, la philosophie, le commerce et l'art de la navigation.",
+];
+
+/* ── Liste de mots (Practice) ── */
+const WORDS = [
+  'le','la','un','une','des','du','de','en','au','par','sur','avec','pour','sans',
+  'être','avoir','faire','dire','aller','voir','savoir','pouvoir','vouloir','venir',
+  'prendre','mettre','donner','trouver','partir','rester','croire','suivre',
+  'monde','temps','main','jour','nuit','gens','ville','pays','chose','place','vie',
+  'grand','petit','bon','nouveau','long','haut','vieux','seul','même','autre',
+  'bien','mal','très','plus','moins','aussi','encore','toujours','jamais','vite',
+  'clavier','vitesse','frappe','lettre','mot','texte','score','rang','touche',
+  'rapide','précis','parfait','excellent','incroyable','champion','victoire',
+  'rythme','fluidité','concentration','doigt','erreur','correct','record',
+  'rouge','bleu','vert','blanc','noir','violet','orange','lumière','ombre',
+  'penser','sentir','devenir','paraître','sembler','rendre','garder','laisser',
+  'chemin','route','maison','porte','fenêtre','table','chaise','livre','page',
+  'soleil','lune','étoile','ciel','nuage','vent','pluie','neige','feu','eau',
+  'force','vitesse','puissance','énergie','esprit','corps','coeur','âme',
+  'bronze','argent','platine','émeraude','diamant','master','champion',
+];
+
+/* ── Config par mode ── */
+const MODE_CONFIG = {
+  ranked: {
+    label:'Ranked · 1v1', dotGrad:'var(--grad-ranked)', textClass:'ranked',
+    timer:true, duration:60, backspace:false, wordMode:false, infinite:true, boss:false,
+  },
+  practice: {
+    label:'Practice · Mots', dotGrad:'var(--grad-practice)', textClass:'practice',
+    timer:false, duration:0, backspace:true, wordMode:true, infinite:false, boss:false,
+  },
+  endless: {
+    label:'Endless · Infini', dotGrad:'var(--grad-endless)', textClass:'endless',
+    timer:false, duration:0, backspace:true, wordMode:false, infinite:true, boss:false,
+  },
+  boss: {
+    label:'Boss Fight', dotGrad:'var(--grad-boss)', textClass:'boss',
+    timer:true, duration:90, backspace:false, wordMode:false, infinite:true, boss:true,
+    bossMaxHP:100, playerLives:5,
+  },
+};
+
+let state = {
+  mode: 'ranked',
+  // paragraph mode
+  text: '', chars: [], cursor: 0,
+  // practice mode
+  wordQueue: [], wordIndex: 0, wordTyped: '', wordsCompleted: 0,
+  wordErrors: 0, wordTotalTyped: 0,
+  // common
+  started: false, finished: false, startTime: null,
+  totalTyped: 0, errors: 0, wpm: 0,
+  timerSec: 60, timerInterval: null, wpmInterval: null,
+  // boss
+  bossHP: 100, playerLives: 5,
+  bossWordStreak: 0,
+};
+
+/* ── Helpers ── */
+function shuffle(arr) { return [...arr].sort(() => Math.random() - .5); }
+
+function buildInfiniteText() {
+  const a = shuffle(TEXTS);
+  const b = shuffle(TEXTS.filter((_,i) => i % 2 === 0)); // subset différent
+  return a.slice(0, 8).concat(b.slice(0, 6)).join(' ');
+}
+
+function buildWordQueue() {
+  return shuffle(WORDS).concat(shuffle(WORDS));
+}
+
+/* ── Launch ── */
+function launchGame(mode = 'ranked') {
+  state.mode = mode;
+  const cfg = MODE_CONFIG[mode];
+
+  // Reset state
+  Object.assign(state, {
+    text:'', chars:[], cursor:0,
+    wordQueue:[], wordIndex:0, wordTyped:'', wordsCompleted:0,
+    wordErrors:0, wordTotalTyped:0,
+    started:false, finished:false, startTime:null,
+    totalTyped:0, errors:0, wpm:0,
+    timerSec: cfg.duration || 60,
+    bossHP: 100, playerLives: cfg.playerLives || 5,
+    bossWordStreak: 0,
+  });
+  clearInterval(state.timerInterval);
+  clearInterval(state.wpmInterval);
+
+  // Header
+  document.getElementById('g-mode-label').textContent = cfg.label;
+  document.getElementById('g-mode-dot').style.background = cfg.dotGrad;
+  document.getElementById('g-wpm').textContent = '0';
+  document.getElementById('g-acc').textContent = '100%';
+  document.getElementById('g-progress').style.width = '0%';
+
+  // Timer display
+  const timerEl = document.getElementById('g-timer');
+  timerEl.className = 'g-timer';
+  if(cfg.timer) {
+    timerEl.textContent = cfg.duration;
+    timerEl.closest('.g-timer-wrap').style.display = 'flex';
+  } else {
+    timerEl.textContent = '∞';
+    timerEl.closest('.g-timer-wrap').style.display = 'flex';
+  }
+
+  // Show/hide mode-specific UI
+  document.getElementById('g-boss-bars').classList.toggle('show', cfg.boss);
+  document.getElementById('g-word-zone').classList.toggle('show', cfg.wordMode);
+  document.getElementById('g-text-box').style.display = cfg.wordMode ? 'none' : 'block';
+  const progTrack = document.querySelector('.g-progress-track');
+  if(progTrack) progTrack.style.display = cfg.wordMode ? 'none' : 'block';
+
+  if(cfg.boss) initBossUI(cfg);
+
+  if(cfg.wordMode) {
+    state.wordQueue = buildWordQueue();
+    renderWordMode();
+  } else {
+    state.text = buildInfiniteText();
+    renderText(cfg.textClass);
+  }
+
+  // Show game screen
+  document.getElementById('game-screen').classList.add('active');
+  document.getElementById('g-results').classList.remove('show');
+  document.getElementById('g-countdown').classList.remove('hidden');
+  document.querySelector('.g-hint').style.visibility = 'visible';
+
+  // Countdown
+  let cd = 3;
+  const cdEl = document.getElementById('g-cd-num');
+  cdEl.textContent = cd;
+  const cdInterval = setInterval(() => {
+    cd--;
+    if(cd > 0) {
+      cdEl.style.animation = 'none';
+      cdEl.offsetHeight;
+      cdEl.style.animation = '';
+      cdEl.textContent = cd;
+    } else {
+      clearInterval(cdInterval);
+      document.getElementById('g-countdown').classList.add('hidden');
+      focusInput();
+    }
+  }, 900);
+}
+
+/* ── Paragraph mode render ── */
+function renderText(textClass) {
+  const container = document.getElementById('g-text');
+  container.innerHTML = '';
+  state.chars = [];
+  [...state.text].forEach((ch, i) => {
+    const span = document.createElement('span');
+    span.textContent = ch;
+    span.className = 'ch' + (i === 0 ? ' ch-cursor' : '');
+    container.appendChild(span);
+    state.chars.push({ el: span, char: ch, status: 'pending', textClass });
+  });
+}
+
+/* ── Practice mode render ── */
+function renderWordMode() {
+  const word = state.wordQueue[state.wordIndex];
+  const container = document.getElementById('g-word-current');
+  container.innerHTML = '';
+  [...word].forEach((ch, i) => {
+    const span = document.createElement('span');
+    span.textContent = ch;
+    span.className = 'ch' + (i === 0 ? ' ch-cursor' : '');
+    container.appendChild(span);
+  });
+
+  // Next word previews
+  const nextRow = document.getElementById('g-word-next-row');
+  nextRow.innerHTML = '';
+  for(let i = 1; i <= 3; i++) {
+    const w = state.wordQueue[(state.wordIndex + i) % state.wordQueue.length];
+    const div = document.createElement('div');
+    div.className = 'g-word-next-item';
+    div.textContent = w;
+    nextRow.appendChild(div);
+  }
+
+  state.wordTyped = '';
+}
+
+/* ── Focus ── */
+function focusInput() { document.getElementById('g-input').focus(); }
+
+/* ── Start ── */
+function startGame() {
+  if(state.started || state.finished) return;
+  state.started = true;
+  state.startTime = Date.now();
+  const cfg = MODE_CONFIG[state.mode];
+
+  if(cfg.timer) {
+    state.timerInterval = setInterval(() => {
+      state.timerSec--;
+      const el = document.getElementById('g-timer');
+      el.textContent = state.timerSec;
+      if(state.timerSec <= 10) el.className = 'g-timer danger';
+      else if(state.timerSec <= 20) el.className = 'g-timer warn';
+      if(state.timerSec <= 0) { clearInterval(state.timerInterval); endGame(); }
+    }, 1000);
+  } else {
+    // Elapsed timer for endless/practice
+    state.timerInterval = setInterval(() => {
+      const sec = Math.floor((Date.now() - state.startTime) / 1000);
+      document.getElementById('g-timer').textContent = sec + 's';
+    }, 1000);
+  }
+
+  state.wpmInterval = setInterval(updateLiveStats, 300);
+
+  // Mécaniques spéciales boss
+  if(state.mode === 'boss') initBossSpecialMechanics();
+}
+
+/* ── Key handler ── */
+function handleKey(e) {
+  if(state.finished) return;
+  if(!document.getElementById('g-countdown').classList.contains('hidden')) return;
+
+  const key = e.key;
+  if(key.length !== 1 && key !== 'Backspace') return;
+  e.preventDefault();
+
+  if(!state.started) startGame();
+
+  const cfg = MODE_CONFIG[state.mode];
+
+  if(cfg.wordMode) { handleKeyWord(key); return; }
+
+  if(key === 'Backspace') {
+    if(cfg.backspace) handleBackspace();
+    return; // Ranked/Boss: backspace ignoré silencieusement
+  }
+
+  const current = state.chars[state.cursor];
+  if(!current) return;
+
+  state.totalTyped++;
+  current.el.classList.remove('ch-cursor');
+
+  if(key === current.char) {
+    current.status = 'done';
+    current.el.className = 'ch ch-done ' + current.textClass;
+    // Streak : chaque lettre correcte consécutive
+    if(cfg.boss) {
+      state.bossWordStreak++;
+      updateStreakDisplay();
+      if(state.bossWordStreak % 100 === 0) recoverBossLife();
+    }
+  } else {
+    current.status = 'err';
+    state.errors++;
+    current.el.className = 'ch ch-err';
+    if(cfg.boss) {
+      hitPlayerBoss();
+      state.bossWordStreak = 0;
+      updateStreakDisplay();
+    }
+  }
+
+  state.cursor++;
+
+  // Boucle infinie : ajoute du texte si on approche de la fin
+  if(state.cursor > state.chars.length - 200) extendText(cfg.textClass);
+
+  // Progression (limitée à longueur actuelle)
+  const pct = Math.min((state.cursor / (state.cursor + 200)) * 100, 99);
+  document.getElementById('g-progress').style.width = pct + '%';
+
+  if(state.cursor < state.chars.length) {
+    state.chars[state.cursor].el.classList.add('ch-cursor');
+    scrollToCursor();
+  }
+
+  if(cfg.boss) updateBossHP();
+  updateLiveStats();
+}
+
+/* ── Practice key handler ── */
+function handleKeyWord(key) {
+  const word = state.wordQueue[state.wordIndex];
+  const pos = state.wordTyped.length;
+
+  if(key === 'Backspace') {
+    if(state.wordTyped.length === 0) return;
+    state.wordTyped = state.wordTyped.slice(0, -1);
+    // Redraw cursor
+    const spans = document.getElementById('g-word-current').querySelectorAll('span');
+    const newPos = state.wordTyped.length;
+    spans.forEach((s, i) => {
+      s.classList.remove('ch-cursor');
+      if(i < newPos) {
+        s.className = 'ch ' + (state.wordTyped[i] === word[i] ? 'ch-done practice' : 'ch-err');
+      } else if(i === newPos) {
+        s.className = 'ch ch-cursor';
+      } else {
+        s.className = 'ch';
+      }
+    });
+    return;
+  }
+
+  if(pos >= word.length) return; // mot complet, attendre l'avance auto
+
+  state.wordTotalTyped++;
+  state.wordTyped += key;
+  const isCorrect = key === word[pos];
+  if(!isCorrect) state.wordErrors++;
+
+  const spans = document.getElementById('g-word-current').querySelectorAll('span');
+  spans[pos].className = 'ch ' + (isCorrect ? 'ch-done practice' : 'ch-err');
+  spans[pos].classList.remove('ch-cursor');
+  if(pos + 1 < spans.length) spans[pos + 1].classList.add('ch-cursor');
+
+  // Mot complet → avancer
+  if(state.wordTyped.length === word.length) {
+    state.wordsCompleted++;
+    document.getElementById('g-word-count').textContent = state.wordsCompleted;
+
+    // Micro-flash vert si parfait
+    const box = document.getElementById('g-word-current');
+    if(!isCorrect || state.wordTyped !== word) {}
+    box.style.transition = 'opacity .08s';
+    box.style.opacity = '0.4';
+    setTimeout(() => {
+      box.style.opacity = '1';
+      state.wordIndex = (state.wordIndex + 1) % state.wordQueue.length;
+      renderWordMode();
+    }, 100);
+  }
+
+  updateLiveStats();
+}
+
+/* ── Backspace (paragraph modes) ── */
+function handleBackspace() {
+  if(state.cursor === 0) return;
+  state.cursor--;
+  const prev = state.chars[state.cursor];
+  if(state.chars[state.cursor + 1]) state.chars[state.cursor + 1].el.classList.remove('ch-cursor');
+  if(prev.status === 'err') state.errors = Math.max(0, state.errors - 1);
+  if(prev.status !== 'pending') state.totalTyped = Math.max(0, state.totalTyped - 1);
+  prev.status = 'pending';
+  prev.el.className = 'ch ch-cursor';
+}
+
+/* ── Texte infini : ajoute des chars en fin de tableau ── */
+let _lastTextIdx = -1;
+function extendText(textClass) {
+  let idx;
+  do { idx = Math.floor(Math.random() * TEXTS.length); } while(idx === _lastTextIdx && TEXTS.length > 1);
+  _lastTextIdx = idx;
+  const extra = TEXTS[idx];
+  const container = document.getElementById('g-text');
+  // Ajouter un espace + nouveau texte
+  [' ', ...extra].forEach(ch => {
+    const span = document.createElement('span');
+    span.textContent = ch;
+    span.className = 'ch';
+    container.appendChild(span);
+    state.chars.push({ el: span, char: ch, status: 'pending', textClass });
+  });
+}
+
+function scrollToCursor() {
+  const cursorEl = state.chars[state.cursor]?.el;
+  if(!cursorEl) return;
+  const box = document.getElementById('g-text-box');
+  // Scroll la box pour garder le curseur sur la 2e ligne (milieu)
+  const lineH = Math.round(cursorEl.offsetHeight * 1.9) || 42;
+  const targetTop = cursorEl.offsetTop - lineH;
+  box.scrollTop = Math.max(0, targetTop);
+}
+
+/* ── Stats live ── */
+function updateLiveStats() {
+  if(!state.startTime) return;
+  const elapsed = (Date.now() - state.startTime) / 60000;
+  const cfg = MODE_CONFIG[state.mode];
+
+  let wpm, acc;
+  if(cfg.wordMode) {
+    wpm = elapsed > 0 ? Math.round(state.wordsCompleted / elapsed) : 0;
+    acc = state.wordTotalTyped > 0
+      ? Math.round(((state.wordTotalTyped - state.wordErrors) / state.wordTotalTyped) * 100) : 100;
+    document.getElementById('g-word-wpm').textContent = wpm;
+    document.getElementById('g-word-acc').textContent = acc + '%';
+  } else {
+    const correct = state.chars.filter(c => c.status === 'done').length;
+    wpm = elapsed > 0 ? Math.round((correct / 5) / elapsed) : 0;
+    acc = state.totalTyped > 0
+      ? Math.round(((state.totalTyped - state.errors) / state.totalTyped) * 100) : 100;
+  }
+
+  const wpmEl = document.getElementById('g-wpm');
+  if(parseInt(wpmEl.textContent) !== wpm) {
+    wpmEl.textContent = wpm;
+    wpmEl.classList.remove('stat-popping');
+    void wpmEl.offsetWidth;
+    wpmEl.classList.add('stat-popping');
+  }
+  state.wpm = wpm;
+  document.getElementById('g-acc').textContent = acc + '%';
+}
+
+/* ── Boss Fight ── */
+function updateStreakDisplay() {
+  const el = document.getElementById('g-streak');
+  const val = document.getElementById('g-streak-val');
+  if(!el || !val) return;
+  val.textContent = state.bossWordStreak;
+  const progress = state.bossWordStreak % 50;
+  el.classList.toggle('hot', progress >= 70);
+}
+
+function recoverBossLife() {
+  const boss = BOSSES[currentBossIdx];
+  if(!boss) return;
+  if(state.playerLives >= boss.lives) return; // déjà au max
+  state.playerLives++;
+  const lives = document.getElementById('g-lives').querySelectorAll('.g-life');
+  // Restaurer la dernière vie perdue
+  for(let i = lives.length - 1; i >= 0; i--) {
+    if(lives[i].classList.contains('lost')) {
+      lives[i].classList.remove('lost');
+      lives[i].classList.add('recovered');
+      setTimeout(() => lives[i].classList.remove('recovered'), 700);
+      break;
+    }
+  }
+  // Toast
+  const toast = document.getElementById('boss-toast');
+  if(toast) {
+    toast.textContent = '💚 +1 vie — 50 mots parfaits !';
+    toast.style.opacity = '1';
+    toast.style.transform = 'translate(-50%, -50%) scale(1)';
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translate(-50%, -50%) scale(0.85)';
+    }, 1800);
+  }
+}
+
+function initBossUI(cfg) {
+  state.bossHP = 100;
+  // Streak display
+  const streakEl = document.getElementById('g-streak');
+  if(streakEl) streakEl.classList.toggle('show', !!cfg.boss);
+  updateStreakDisplay();
+  state.playerLives = cfg.playerLives;
+  document.getElementById('g-boss-hp').style.width = '100%';
+  document.getElementById('g-boss-hp-val').textContent = '100%';
+  const livesEl = document.getElementById('g-lives');
+  livesEl.innerHTML = Array(cfg.playerLives).fill('<span class="g-life">❤️</span>').join('');
+}
+
+function updateBossHP() {
+  // 1 char correct = 100/totalChars HP de dégâts → le joueur tue le boss exactement en totalChars frappes
+  const boss = BOSSES[currentBossIdx];
+  const dmgPerChar = boss ? (100 / boss.totalChars) : 1;
+  state.bossHP = Math.max(0, state.bossHP - dmgPerChar);
+  const pct = Math.round(state.bossHP);
+  const hpEl = document.getElementById('g-boss-hp');
+  hpEl.style.width = pct + '%';
+  hpEl.classList.remove('hp-hitting');
+  void hpEl.offsetWidth;
+  hpEl.classList.add('hp-hitting');
+  document.getElementById('g-boss-hp-val').textContent = pct + '%';
+  if(state.bossHP <= 0) { endGame('boss_win'); }
+}
+
+function hitPlayerBoss(dmg = 1) {
+  const hits = (state.doubleDamage ? dmg * 2 : dmg);
+  for(let h = 0; h < hits; h++) {
+    if(state.playerLives <= 0) break;
+    state.playerLives--;
+    const lives = document.getElementById('g-lives').querySelectorAll('.g-life');
+    if(lives[state.playerLives]) lives[state.playerLives].classList.add('lost');
+  }
+  if(state.playerLives <= 0) { clearInterval(state.timerInterval); endGame('boss_lose'); }
+}
+
+/* ── End game ── */
+
+function countUp(el, target, duration) {
+  const start = Date.now();
+  const tick = () => {
+    const p = Math.min((Date.now() - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    const val = Math.round(target * ease);
+    el.firstChild.textContent = val + ' ';
+    if(p < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+function endGame(outcome) {
+  clearInterval(state.timerInterval);
+  clearInterval(state.wpmInterval);
+  state.finished = true;
+  updateLiveStats();
+
+  const cfg = MODE_CONFIG[state.mode];
+  let wpm = state.wpm;
+  let acc, correct, errors;
+
+  if(cfg.wordMode) {
+    acc = state.wordTotalTyped > 0
+      ? Math.round(((state.wordTotalTyped - state.wordErrors) / state.wordTotalTyped) * 100) : 100;
+    correct = state.wordsCompleted;
+    errors = state.wordErrors;
+  } else {
+    correct = state.chars.filter(c => c.status === 'done').length;
+    acc = state.totalTyped > 0
+      ? Math.round(((state.totalTyped - state.errors) / state.totalTyped) * 100) : 100;
+    errors = state.errors;
+  }
+
+  // ELO delta (ranked uniquement) — seuil progressif par rang
+  const RANK_BREAKEVEN = [30, 45, 60, 75, 90, 105, 120, 140];
+  const eloDelta = (() => {
+    if(state.mode !== 'ranked') return null;
+    const rankIdx = RANK_INFO.indexOf(getRankForELO(currentELO));
+    const breakeven = RANK_BREAKEVEN[rankIdx] ?? 30;
+    const diff = wpm - breakeven;
+    if(diff >= 0) return  Math.min(Math.round(18 + diff * 0.65), 55);
+    else          return -Math.min(Math.round(10 + Math.abs(diff) * 0.45), 40);
+  })();
+
+  // Sauvegarder dans l'historique + détecter rank-up
+  if(state.mode === 'ranked' && eloDelta !== null) {
+    const prevRank = getRankForELO(currentELO);
+    saveRankedMatch(wpm, acc, errors, eloDelta);
+    const newRank = getRankForELO(currentELO);
+    if(newRank !== prevRank && newRank.min > prevRank.min) {
+      setTimeout(() => showRankUp(prevRank, newRank), 1800);
+    }
+  }
+
+  // Vérifier les achievements (léger délai pour laisser les résultats s'afficher)
+  const _outcome = outcome === 'boss_win' ? 'win' : (state.mode === 'ranked' && eloDelta > 0 ? 'win' : 'loss');
+  setTimeout(() => checkAchievements(wpm, acc, state.mode, _outcome), 1200);
+
+  const resWpmEl = document.getElementById('g-res-wpm');
+  resWpmEl.innerHTML = `<span>${wpm} </span><span style="font-size:32px;-webkit-text-fill-color:var(--muted);background:none;">WPM</span>`;
+  countUp(resWpmEl, wpm, 900);
+  document.getElementById('g-res-acc').textContent = acc + '%';
+  document.getElementById('g-res-chars').textContent = cfg.wordMode ? correct + ' mots' : correct;
+  document.getElementById('g-res-errors').textContent = errors;
+
+  if(eloDelta !== null) {
+    const rank = getRankForELO(currentELO);
+    document.getElementById('g-res-rank-img').src = `assets/ranks/svg/${rank.file}.svg`;
+    document.getElementById('g-res-rank-text').textContent = `${rank.name} · ${currentELO.toLocaleString('fr-FR')}`;
+    const eloEl = document.getElementById('g-res-elo');
+    eloEl.textContent = (eloDelta >= 0 ? '+' : '') + eloDelta;
+    eloEl.style.color = eloDelta >= 0 ? '#22c55e' : '#ef4444';
+    eloEl.className = '';
+    document.querySelector('.g-res-elo').style.display = 'flex';
+  } else {
+    document.querySelector('.g-res-elo').style.display = 'none';
+  }
+
+  cleanupBossSpecialMechanics();
+
+  if(outcome === 'boss_win') {
+    document.querySelector('#g-results .g-res-title').textContent = '🏆 Boss vaincu !';
+    // Marquer le boss comme battu
+    if(BOSSES[currentBossIdx]) { BOSSES[currentBossIdx].beaten = true; saveStorage(); }
+  } else if(outcome === 'boss_lose') {
+    document.querySelector('#g-results .g-res-title').textContent = '💀 Défaite — Réessaie !';
+  } else {
+    document.querySelector('#g-results .g-res-title').textContent = 'Partie terminée';
+  }
+
+  document.getElementById('g-results').classList.add('show');
+  document.querySelector('.g-hint').style.visibility = 'hidden';
+
+  // Bouton retour adapté selon le mode
+  const backBtn = document.getElementById('g-res-back-btn');
+  if(state.mode === 'boss') {
+    backBtn.textContent = '← Sélection Boss';
+    backBtn.onclick = () => { abortGame(); openBossSelect(); };
+    // Mise à jour du compteur sur la card
+    const beaten = BOSSES.filter(b=>b.beaten).length;
+    const bbb = document.getElementById('boss-beaten-btn');
+    if(bbb) bbb.textContent = `Boss vaincus (${beaten})`;
+  } else {
+    backBtn.textContent = 'Accueil';
+    backBtn.onclick = abortGame;
+  }
+}
+
+function restartGame() { launchGame(state.mode); }
+
+function abortGame() {
+  clearInterval(state.timerInterval);
+  clearInterval(state.wpmInterval);
+  state.finished = true;
+  document.getElementById('game-screen').classList.remove('active');
+}
+
+// Keyboard capture
+document.addEventListener('keydown', e => {
+  const gs = document.getElementById('game-screen');
+  if(!gs.classList.contains('active')) return;
+  if(e.key === 'Escape') { abortGame(); return; }
+  e.preventDefault(); // bloquer toute frappe parasite
+  const countdown = document.getElementById('g-countdown');
+  if(!countdown.classList.contains('hidden')) return; // countdown actif → ignorer
+  focusInput();
+  handleKey(e);
+});
+
+
+/* ══════════════════════════════════════════
+   BOSS FIGHT SYSTEM
+══════════════════════════════════════════ */
+
+const BOSSES = [
+  {
+    id:0, emoji:'🤓', name:'Le Stagiaire',
+    diff:1, stars:'★☆☆☆☆',
+    desc:'Un débutant qui tape avec deux doigts. Montre-lui comment on fait.',
+    tags:['60 WPM min','90s','5 vies'],
+    tagClasses:['','',''],
+    // totalChars = nombre de bonnes frappes pour tuer (indépendant du WPM)
+    totalChars:80, lives:5, timer:90,
+    color:'#6888a0', mechanics:[], beaten:false,
+  },
+  {
+    id:1, emoji:'👩‍💼', name:'La Secrétaire',
+    diff:2, stars:'★★☆☆☆',
+    desc:'30 ans de dactylo. Rapide et prévisible, mais elle ne pardonne rien.',
+    tags:['80s','5 vies'],
+    tagClasses:['',''],
+    totalChars:120, lives:5, timer:80,
+    color:'#c07808', mechanics:[], beaten:false,
+  },
+  {
+    id:2, emoji:'📰', name:'Le Journaliste',
+    diff:2, stars:'★★☆☆☆',
+    desc:'Habitué aux deadlines, il tape sans jamais lever les yeux.',
+    tags:['75s','4 vies','Attaque toutes les 30s'],
+    tagClasses:['','','orange'],
+    totalChars:165, lives:4, timer:75,
+    color:'#087048', mechanics:['attack_slow'],
+    attackInterval:30, beaten:false,
+  },
+  {
+    id:3, emoji:'💻', name:'Le Codeur',
+    diff:3, stars:'★★★☆☆',
+    desc:'10 000 heures de clavier. Il tape même dans son sommeil.',
+    tags:['70s','4 vies','Attaque toutes les 22s'],
+    tagClasses:['','','orange'],
+    totalChars:210, lives:4, timer:70,
+    color:'#1038c0', mechanics:['attack_fast'],
+    attackInterval:22, beaten:false,
+  },
+  {
+    id:4, emoji:'🎮', name:'Le Speedrunner',
+    diff:3, stars:'★★★☆☆',
+    desc:'Ses doigts sont des missiles. Le timer s\'accélère à mi-combat.',
+    tags:['65s','3 vies','Timer accéléré'],
+    tagClasses:['','red','orange'],
+    totalChars:250, lives:3, timer:65,
+    color:'#7c3aed', mechanics:['timer_boost'], beaten:false,
+  },
+  {
+    id:5, emoji:'📚', name:'L\'Archiviste',
+    diff:4, stars:'★★★★☆',
+    desc:'Il a retranscrit des millions de mots. Il se soigne en combat.',
+    tags:['60s','3 vies','Attaque + Regen'],
+    tagClasses:['red','red','orange'],
+    totalChars:290, lives:3, timer:60,
+    color:'#780818', mechanics:['attack_fast','regen'],
+    attackInterval:25, regenRate:0.15, beaten:false,
+  },
+  {
+    id:6, emoji:'🏆', name:'Le Champion Déchu',
+    diff:4, stars:'★★★★☆',
+    desc:'Ancien champion mondial. Il récupère vite et accélère le temps.',
+    tags:['55s','3 vies','Attaque + Regen + Timer'],
+    tagClasses:['red','red','red'],
+    totalChars:330, lives:3, timer:55,
+    color:'#5010a0', mechanics:['attack_fast','regen_heavy','timer_boost'],
+    attackInterval:20, regenRate:0.3, beaten:false,
+  },
+  {
+    id:7, emoji:'🤖', name:'L\'IA',
+    diff:5, stars:'★★★★★',
+    desc:'Elle ne fatigue jamais. Tes erreurs font double dégât. Bonne chance.',
+    tags:['50s','3 vies','Attaque + Regen + Timer'],
+    tagClasses:['red','red','red'],
+    totalChars:370, lives:3, timer:50,
+    color:'#1b1640', mechanics:['attack_fast','regen_heavy','timer_boost'],
+    attackInterval:18, regenRate:0.3, beaten:false,
+  },
+];
+
+let currentBossIdx = 0;
+let bossAttackInterval = null;
+let bossRegenInterval  = null;
+
+/* ── Boss Select ── */
+function openBossSelect() {
+  renderBossSelect();
+  document.getElementById('boss-screen').classList.add('active');
+}
+function closeBossSelect() {
+  document.getElementById('boss-screen').classList.remove('active');
+}
+
+function renderBossSelect() {
+  const beaten = BOSSES.filter(b => b.beaten).length;
+  document.getElementById('bs-subtitle').textContent = `${beaten}/8 boss vaincus`;
+
+  document.getElementById('bs-body').innerHTML = BOSSES.map((boss, i) => {
+    const unlocked = i === 0 || BOSSES[i-1].beaten;
+    const isBeaten = boss.beaten;
+    const lockedClass = !unlocked ? ' bs-locked' : '';
+    const beatenClass = isBeaten ? ' bs-beaten' : '';
+    const hpColor = boss.color;
+
+    return `
+    <div class="bs-card${lockedClass}${beatenClass}">
+      <div class="bs-card-top">
+        <span class="bs-num">#${i+1}</span>
+        ${isBeaten ? '<span class="bs-beaten-badge">✅</span>' : ''}
+        <div class="bs-emoji">${boss.emoji}</div>
+        <div class="bs-name">${boss.name}</div>
+        <div class="bs-stars">${boss.stars}</div>
+      </div>
+      <div class="bs-card-divider"></div>
+      <div class="bs-card-body">
+        <div class="bs-hp-bar">
+          <div class="bs-hp-fill" style="width:${isBeaten?'0':'100'}%;background:${hpColor}"></div>
+        </div>
+        <div class="bs-desc">${boss.desc}</div>
+        <div class="bs-tags">
+          ${boss.tags.map((t,ti) => `<span class="bs-tag ${boss.tagClasses[ti]||''}">${t}</span>`).join('')}
+        </div>
+        <button class="bs-btn" ${!unlocked ? 'disabled' : `onclick="startBoss(${i})"`}>
+          ${!unlocked ? '🔒 Verrouillé' : isBeaten ? '⚔️ Rejouer' : '⚔️ Affronter'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── Start Boss ── */
+function startBoss(idx) {
+  currentBossIdx = idx;
+  const boss = BOSSES[idx];
+  closeBossSelect();
+
+  // Config du mode boss avec les données du boss
+  MODE_CONFIG.boss.duration    = boss.timer;
+  MODE_CONFIG.boss.playerLives = boss.lives;
+
+  launchGame('boss');
+}
+
+/* ── Mécaniques spéciales ── */
+function initBossSpecialMechanics() {
+  const boss = BOSSES[currentBossIdx];
+  if(!boss) return;
+
+  // Attaque du boss (retire des vies périodiquement)
+  if(boss.mechanics.includes('attack_slow') || boss.mechanics.includes('attack_fast')) {
+    bossAttackInterval = setInterval(() => {
+      if(state.finished) return;
+      hitPlayerBoss();
+      // Flash rouge sur l'écran
+      const gs = document.getElementById('game-screen');
+      gs.style.background = 'rgba(190,18,60,0.08)';
+      setTimeout(() => gs.style.background = '', 300);
+    }, boss.attackInterval * 1000);
+  }
+
+  // Régénération HP du boss
+  if(boss.mechanics.includes('regen') || boss.mechanics.includes('regen_heavy')) {
+    bossRegenInterval = setInterval(() => {
+      if(state.finished) return;
+      state.bossHP = Math.min(100, state.bossHP + boss.regenRate);
+      const pct = Math.round(state.bossHP);
+      document.getElementById('g-boss-hp').style.width = pct + '%';
+      document.getElementById('g-boss-hp-val').textContent = pct + '%';
+    }, 1000);
+  }
+
+  // Timer accéléré (après 50% du temps, le timer perd 2s/s)
+  if(boss.mechanics.includes('timer_boost')) {
+    const halfTime = Math.floor(boss.timer / 2);
+    setTimeout(() => {
+      if(state.finished) return;
+      // Ajouter un interval supplémentaire
+      state.timerBoostInterval = setInterval(() => {
+        if(state.finished) { clearInterval(state.timerBoostInterval); return; }
+        state.timerSec--;
+        document.getElementById('g-timer').textContent = state.timerSec;
+        if(state.timerSec <= 0) endGame();
+      }, 1000);
+    }, halfTime * 1000);
+  }
+
+}
+
+function cleanupBossSpecialMechanics() {
+  clearInterval(bossAttackInterval);
+  clearInterval(bossRegenInterval);
+  clearInterval(state.timerBoostInterval);
+  bossAttackInterval = null;
+  bossRegenInterval  = null;
+  document.getElementById('game-screen').style.background = '';
+}
+
+/* ══════════════════════════════════════════
+   PROFIL
+══════════════════════════════════════════ */
+
+const ACHIEVEMENTS = [
+  // ── Vitesse ──
+  { cat:'Vitesse',     icon:'🐢', name:'Premiers pas',    desc:'Atteindre 50 WPM',                unlocked:false,  isNew:false },
+  { cat:'Vitesse',     icon:'💨', name:'Centurion',        desc:'Atteindre 100 WPM',               unlocked:false,  isNew:false },
+  { cat:'Vitesse',     icon:'⚡', name:'Speed Demon',      desc:'Atteindre 150 WPM',               unlocked:false,  isNew:false },
+  { cat:'Vitesse',     icon:'🌪️', name:'Supersonique',     desc:'Atteindre 180 WPM',               unlocked:false,  isNew:false },
+  { cat:'Vitesse',     icon:'☄️', name:'Météore',           desc:'Atteindre 200 WPM',               unlocked:false,  isNew:false },
+  // ── Précision ──
+  { cat:'Précision',   icon:'🎯', name:'Sniper',           desc:'100% précision sur une partie',    unlocked:false,  isNew:false  },
+  { cat:'Précision',   icon:'🔬', name:'Chirurgien',       desc:'99%+ sur 10 parties de suite',     unlocked:false,  isNew:false },
+  { cat:'Précision',   icon:'💎', name:'Perfectionniste',  desc:'0 erreur sur 3 parties de suite',  unlocked:false,  isNew:false },
+  { cat:'Précision',   icon:'🧬', name:'ADN parfait',      desc:'100% précision 5 fois',            unlocked:false,  isNew:false },
+  // ── Volume ──
+  { cat:'Volume',      icon:'🎮', name:'Bienvenue',        desc:'Jouer sa première partie',         unlocked:false,  isNew:false },
+  { cat:'Volume',      icon:'🏋️', name:'Régulier',         desc:'50 parties jouées',                unlocked:false,  isNew:false },
+  { cat:'Volume',      icon:'📚', name:'Assidu',           desc:'200 parties jouées',               unlocked:false,  isNew:false },
+  { cat:'Volume',      icon:'🔥', name:'Obsédé',           desc:'500 parties jouées',               unlocked:false,  isNew:false },
+  { cat:'Volume',      icon:'📅', name:'7 jours',          desc:'Jouer 7 jours de suite',           unlocked:false,  isNew:false },
+  // ── Ranked ──
+  { cat:'Ranked',      icon:'⚔️', name:'Premier sang',     desc:'Première victoire en Ranked',      unlocked:false,  isNew:false },
+  { cat:'Ranked',      icon:'🔥', name:'En feu',           desc:'5 victoires consécutives',         unlocked:false,  isNew:false },
+  { cat:'Ranked',      icon:'📈', name:'Grimpeur',         desc:'Gagner +100 ELO en une journée',   unlocked:false,  isNew:false },
+  { cat:'Ranked',      icon:'💪', name:'Gladiateur',       desc:'Gagner 25 parties Ranked',         unlocked:false,  isNew:false },
+  // ── Rangs ──
+  { cat:'Rangs',       icon:'🥈', name:'Argent',           desc:'Atteindre le rang Argent',         unlocked:false,  isNew:false },
+  { cat:'Rangs',       icon:'🏆', name:'Élite',            desc:'Atteindre le rang Émeraude',       unlocked:false,  isNew:false },
+  { cat:'Rangs',       icon:'💠', name:'Diamant pur',      desc:'Atteindre le rang Diamant',        unlocked:false,  isNew:false },
+  { cat:'Rangs',       icon:'👑', name:'Champion',         desc:'Atteindre le rang Champion',       unlocked:false,  isNew:false },
+  // ── Modes ──
+  { cat:'Modes',       icon:'♾️', name:'Survivant',        desc:'5 000 mots en mode Endless',       unlocked:false,  isNew:false },
+  { cat:'Modes',       icon:'💀', name:'Boss Slayer',      desc:'Vaincre le premier boss',          unlocked:false,  isNew:false },
+  { cat:'Modes',       icon:'🛡️', name:'Intouchable',      desc:'Finir un Boss sans perdre de vie', unlocked:false,  isNew:false },
+  // ── Spécial ──
+  { cat:'Spécial',     icon:'🌙', name:'Noctambule',       desc:'Jouer après minuit',               unlocked:false,  isNew:false },
+  { cat:'Spécial',     icon:'🌅', name:'Lève-tôt',         desc:'Jouer avant 7h du matin',          unlocked:false,  isNew:false },
+  { cat:'Spécial',     icon:'🤯', name:'Mind Blown',       desc:'Battre son record de WPM',         unlocked:false,  isNew:false  },
+  { cat:'Spécial',     icon:'🎲', name:'Chance du débutant',desc:'Gagner sa toute première partie', unlocked:false,  isNew:false },
+  { cat:'Spécial',     icon:'🔄', name:'Revanche !',       desc:'Rejouer immédiatement après défaite',unlocked:false,  isNew:false },
+];
+
+/* ── Toast d'achievement ── */
+function showAchievementToast(ach) {
+  const DUR = 5000;
+  const container = document.getElementById('ach-toast-container');
+  const el = document.createElement('div');
+  el.className = 'ach-toast';
+  el.style.setProperty('--toast-dur', DUR + 'ms');
+  el.innerHTML = `
+    <div class="ach-toast-icon">${ach.icon}</div>
+    <div class="ach-toast-body">
+      <div class="ach-toast-label">🏆 Succès débloqué</div>
+      <div class="ach-toast-name">${ach.name}</div>
+      <div class="ach-toast-desc">${ach.desc}</div>
+    </div>
+    <span class="ach-toast-close" onclick="this.closest('.ach-toast').remove()">✕</span>
+    <div class="ach-toast-bar"></div>
+  `;
+  container.appendChild(el);
+  setTimeout(() => {
+    el.classList.add('out');
+    setTimeout(() => el.remove(), 350);
+  }, DUR);
+}
+
+/* ── Panel "Voir tous les succès" ── */
+function openAchPanel() {
+  const cats = [...new Set(ACHIEVEMENTS.map(a => a.cat))];
+  const unlocked = ACHIEVEMENTS.filter(a => a.unlocked).length;
+  const pct = Math.round((unlocked / ACHIEVEMENTS.length) * 100);
+
+  document.getElementById('ach-prog-txt').textContent = `${unlocked}/${ACHIEVEMENTS.length} débloqués`;
+  document.getElementById('ach-prog-fill').style.width = pct + '%';
+
+  document.getElementById('ach-panel-body').innerHTML = cats.map(cat => {
+    const items = ACHIEVEMENTS.filter(a => a.cat === cat);
+    return `
+      <div>
+        <div class="ach-category-title">${cat}</div>
+        <div class="ach-grid">
+          ${items.map(a => `
+            <div class="ach-item${a.unlocked ? '' : ' ach-locked'}">
+              ${a.isNew ? '<span class="ach-item-badge">New</span>' : ''}
+              <div class="ach-item-icon">${a.icon}</div>
+              <div class="ach-item-name">${a.name}</div>
+              <div class="ach-item-desc">${a.desc}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('ach-overlay').classList.add('open');
+}
+function closeAchPanel() {
+  document.getElementById('ach-overlay').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeAchPanel(); });
+
+/* ── Vérification des achievements en fin de partie ── */
+function checkAchievements(wpm, acc, mode, outcome) {
+  const toUnlock = [];
+  const unlock = name => {
+    const a = ACHIEVEMENTS.find(a => a.name === name);
+    if(a && !a.unlocked) { a.unlocked = true; a.isNew = true; toUnlock.push(a); }
+  };
+
+  const ranked = matchHistory.filter(m => m.eloDelta !== null);
+  const wins   = ranked.filter(m => m.eloDelta > 0);
+  const total  = matchHistory.length;
+
+  // ── Vitesse ──
+  if(wpm >= 50)  unlock('Premiers pas');
+  if(wpm >= 100) unlock('Centurion');
+  if(wpm >= 150) unlock('Speed Demon');
+  if(wpm >= 180) unlock('Supersonique');
+  if(wpm >= 200) unlock('Météore');
+
+  // ── Précision ──
+  if(acc === 100) unlock('Sniper');
+  const recentAcc = matchHistory.slice(0, 10).map(m => m.acc);
+  if(recentAcc.length >= 10 && recentAcc.every(a => a >= 99)) unlock('Chirurgien');
+  const zeroErr3 = matchHistory.slice(0, 3).filter(m => m.errors === 0);
+  if(zeroErr3.length >= 3) unlock('Perfectionniste');
+  if(matchHistory.filter(m => m.acc === 100).length >= 5) unlock('ADN parfait');
+
+  // ── Volume ──
+  if(total >= 1)   unlock('Bienvenue');
+  if(total >= 50)  unlock('Régulier');
+  if(total >= 200) unlock('Assidu');
+  if(total >= 500) unlock('Obsédé');
+
+  // Streak 7 jours
+  const dates = [...new Set(matchHistory.map(m => new Date(m.date).toDateString()))];
+  let streak = 1;
+  for(let i = 1; i < dates.length; i++) {
+    const d1 = new Date(dates[i-1]), d2 = new Date(dates[i]);
+    if((d1 - d2) / 86400000 <= 1.5) streak++; else break;
+  }
+  if(streak >= 7) unlock('7 jours');
+
+  // ── Ranked ──
+  if(wins.length >= 1)  unlock('Premier sang');
+  if(wins.length >= 25) unlock('Gladiateur');
+
+  // Streak de 5 victoires consécutives
+  const last5 = ranked.slice(0, 5);
+  if(last5.length >= 5 && last5.every(m => m.eloDelta > 0)) unlock('En feu');
+
+  // +100 ELO aujourd'hui
+  const today = new Date().toDateString();
+  const todayGames = ranked.filter(m => new Date(m.date).toDateString() === today);
+  const eloToday = todayGames.reduce((sum, m) => sum + m.eloDelta, 0);
+  if(eloToday >= 100) unlock('Grimpeur');
+
+  // ── Rangs ──
+  const rank = getRankForELO(currentELO);
+  if(currentELO >= 600)  unlock('Argent');
+  if(currentELO >= 1200) unlock('Élite');
+  if(currentELO >= 1500) unlock('Diamant pur');
+  if(currentELO >= 2200) unlock('Champion');
+
+  // ── Modes ──
+  if(BOSSES[0]?.beaten) unlock('Boss Slayer');
+
+  // ── Spécial ──
+  const h = new Date().getHours();
+  if(h >= 0 && h < 5)  unlock('Noctambule');
+  if(h >= 5 && h < 7)  unlock('Lève-tôt');
+
+  // Record WPM personnel
+  const prevBest = matchHistory.slice(1).reduce((b, m) => Math.max(b, m.wpm), 0);
+  if(wpm > 0 && wpm > prevBest && matchHistory.length > 1) unlock('Mind Blown');
+
+  // Première partie gagnée
+  if(mode === 'ranked' && outcome === 'win' && wins.length === 1) unlock('Chance du débutant');
+
+  // Revanche (rejouer immédiatement après une défaite)
+  if(ranked.length >= 2 && ranked[1].eloDelta < 0) unlock('Revanche !');
+
+  if(toUnlock.length > 0) saveStorage();
+  toUnlock.forEach((a, i) => setTimeout(() => showAchievementToast(a), i * 1400));
+}
+
+
+function showAchievementToast(ach) {
+  const DUR = 5000;
+  const container = document.getElementById('ach-toast-container');
+  const el = document.createElement('div');
+  el.className = 'ach-toast';
+  el.style.setProperty('--toast-dur', DUR + 'ms');
+  el.innerHTML = `
+    <div class="ach-toast-icon">${ach.icon}</div>
+    <div class="ach-toast-body">
+      <div class="ach-toast-label">🏆 Succès débloqué</div>
+      <div class="ach-toast-name">${ach.name}</div>
+      <div class="ach-toast-desc">${ach.desc}</div>
+    </div>
+    <span class="ach-toast-close" onclick="this.closest('.ach-toast').remove()">✕</span>
+    <div class="ach-toast-bar"></div>
+  `;
+  container.appendChild(el);
+  setTimeout(() => {
+    el.classList.add('out');
+    setTimeout(() => el.remove(), 350);
+  }, DUR);
+}
+
+/* ── Panel "Voir tous les succès" ── */
+function openAchPanel() {
+  const cats = [...new Set(ACHIEVEMENTS.map(a => a.cat))];
+  const unlocked = ACHIEVEMENTS.filter(a => a.unlocked).length;
+  const pct = Math.round((unlocked / ACHIEVEMENTS.length) * 100);
+
+  document.getElementById('ach-prog-txt').textContent = `${unlocked}/${ACHIEVEMENTS.length} débloqués`;
+  document.getElementById('ach-prog-fill').style.width = pct + '%';
+
+  document.getElementById('ach-panel-body').innerHTML = cats.map(cat => {
+    const items = ACHIEVEMENTS.filter(a => a.cat === cat);
+    return `
+      <div>
+        <div class="ach-category-title">${cat}</div>
+        <div class="ach-grid">
+          ${items.map(a => `
+            <div class="ach-item${a.unlocked ? '' : ' ach-locked'}">
+              ${a.isNew ? '<span class="ach-item-badge">New</span>' : ''}
+              <div class="ach-item-icon">${a.icon}</div>
+              <div class="ach-item-name">${a.name}</div>
+              <div class="ach-item-desc">${a.desc}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('ach-overlay').classList.add('open');
+}
+function closeAchPanel() {
+  document.getElementById('ach-overlay').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeAchPanel(); });
+
+/* ── Vérification des achievements en fin de partie ── */
+function checkAchievements(wpm, acc, mode) {
+  const toUnlock = [];
+  const find = name => ACHIEVEMENTS.find(a => a.name === name);
+
+  const wpmMilestones = [
+    { wpm:50,  name:'Premiers pas'  },
+    { wpm:100, name:'Centurion'     },
+    { wpm:150, name:'Speed Demon'   },
+    { wpm:180, name:'Supersonique'  },
+    { wpm:200, name:'Météore'       },
+  ];
+  wpmMilestones.forEach(m => {
+    const a = find(m.name);
+    if(a && !a.unlocked && wpm >= m.wpm) { a.unlocked = true; a.isNew = true; toUnlock.push(a); }
+  });
+
+  if(acc === 100) {
+    const a = find('Sniper');
+    if(a && !a.unlocked) { a.unlocked = true; a.isNew = true; toUnlock.push(a); }
+  }
+
+  if(mode === 'ranked') {
+    const a = find('Premier sang');
+    if(a && !a.unlocked) { a.unlocked = true; a.isNew = true; toUnlock.push(a); }
+  }
+
+  if(toUnlock.length > 0) saveStorage();
+  toUnlock.forEach((a, i) => {
+    setTimeout(() => showAchievementToast(a), i * 1200);
+  });
+}
+
+// WPM_HISTORY est dérivée dynamiquement de matchHistory (ranked uniquement)
+
+function closeModal(e)    { if(e.target===document.getElementById('overlay')) closeOverlay(); }
+function closeOverlay()   { document.getElementById('overlay').classList.remove('open'); }
+
+function openProfile() {
+  renderProfile();
+  document.getElementById('profile-screen').classList.add('active');
+}
+function closeProfile() {
+  document.getElementById('profile-screen').classList.remove('active');
+}
+
+function renderProfile() {
+  const rank = getRankForELO(currentELO);
+  const nextRankIdx = Math.min(RANK_INFO.indexOf(rank) + 1, RANK_INFO.length - 1);
+  const nextRank = RANK_INFO[nextRankIdx];
+  const eloInRank = currentELO - rank.min;
+  const rankRange = (nextRank.min || 9999) - rank.min;
+  const rankPct = Math.min(Math.round((eloInRank / rankRange) * 100), 100);
+  const eloToNext = nextRank.min - currentELO;
+
+  const wpmHistory = matchHistory.map(m => m.wpm).slice(0, 30);
+  const totalGames = matchHistory.length;
+  const wins = matchHistory.filter(m => m.eloDelta > 0).length;
+  const avgWPM = wpmHistory.length > 0 ? Math.round(wpmHistory.reduce((a,b)=>a+b,0)/wpmHistory.length) : 0;
+  const bestWPM = wpmHistory.length > 0 ? Math.max(...wpmHistory) : 0;
+  const totalTime = Math.round(totalGames * 1.2); // minutes estimées
+
+  document.getElementById('pf-body').innerHTML = `
+    <!-- COLONNE GAUCHE -->
+    <div class="pf-left" style="animation:pf-col-in .4s cubic-bezier(0.16,1,0.3,1) both .04s">
+
+      <!-- Hero -->
+      <div class="pf-hero">
+        <div class="pf-avatar">M</div>
+        <div class="pf-username">Matéo</div>
+        <div class="pf-badge-row">
+          <img class="pf-rank-badge" src="assets/ranks/svg/${rank.file}.svg">
+          <span class="pf-rank-name">${rank.name}</span>
+          <span class="pf-elo">${currentELO.toLocaleString('fr-FR')} ELO</span>
+        </div>
+        <div class="pf-meta">
+          <span>📅 Membre depuis mars 2025</span>
+          <span><span class="live-dot" style="display:inline-block"></span> En ligne</span>
+        </div>
+      </div>
+
+      <!-- Progression vers rang suivant -->
+      <div class="pf-rank-progress">
+        <div class="pf-rp-title">Progression vers ${nextRank.name}</div>
+        <div class="pf-rp-row">
+          <img class="pf-rp-badge" src="assets/ranks/svg/${rank.file}.svg">
+          <div class="pf-rp-track">
+            <div class="pf-rp-fill" style="width:${rankPct}%;transform-origin:left center;animation:bar-grow .9s cubic-bezier(0.16,1,0.3,1) both .2s"></div>
+          </div>
+          <img class="pf-rp-badge" src="assets/ranks/svg/${nextRank.file}.svg">
+        </div>
+        <div class="pf-rp-labels">
+          <span>${currentELO} ELO</span>
+          <span>${rankPct}%</span>
+          <span>${eloToNext > 0 ? eloToNext + ' ELO restants' : nextRank.name}</span>
+        </div>
+      </div>
+
+      <!-- Stats grid -->
+      <div class="pf-stats-grid">
+        <div class="pf-stat-card">
+          <div class="pf-stat-val grad">${bestWPM}</div>
+          <div class="pf-stat-lbl">WPM record</div>
+        </div>
+        <div class="pf-stat-card">
+          <div class="pf-stat-val">${avgWPM}</div>
+          <div class="pf-stat-lbl">WPM moyen</div>
+        </div>
+        <div class="pf-stat-card">
+          <div class="pf-stat-val">${totalGames}</div>
+          <div class="pf-stat-lbl">Parties jouées</div>
+        </div>
+        <div class="pf-stat-card">
+          <div class="pf-stat-val">${totalGames > 0 ? Math.round((wins/totalGames)*100) : 0}%</div>
+          <div class="pf-stat-lbl">Victoires</div>
+        </div>
+        <div class="pf-stat-card">
+          <div class="pf-stat-val">98.2%</div>
+          <div class="pf-stat-lbl">Précision moy.</div>
+        </div>
+        <div class="pf-stat-card">
+          <div class="pf-stat-val">${totalTime}m</div>
+          <div class="pf-stat-lbl">Temps total</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- COLONNE DROITE -->
+    <div class="pf-right" style="animation:pf-col-in .4s cubic-bezier(0.16,1,0.3,1) both .11s">
+
+      <!-- Évolution WPM -->
+      <div class="pf-section">
+        <div class="pf-section-title">
+          <span>Évolution WPM</span>
+          <span style="font-size:10px;font-weight:500;color:var(--muted)">30 dernières parties</span>
+        </div>
+        <div class="pf-chart">${buildWPMChart()}</div>
+      </div>
+
+      <!-- Activité -->
+      <div class="pf-section">
+        <div class="pf-section-title">
+          <span>Activité</span>
+          <span style="font-size:10px;font-weight:500;color:var(--muted)">12 derniers mois</span>
+        </div>
+        <div class="pf-heatmap">${buildHeatmap()}</div>
+      </div>
+
+      <!-- Achievements -->
+      <div class="pf-section">
+        <div class="pf-section-title">
+          <span>Succès récents</span>
+          <button onclick="openAchPanel()" style="font-family:var(--font-b);font-size:11px;font-weight:600;color:#7c3aed;cursor:pointer;background:none;border:none;">
+            Voir tout (${ACHIEVEMENTS.filter(a=>a.unlocked).length}/${ACHIEVEMENTS.length}) →
+          </button>
+        </div>
+        <div class="pf-achievements">
+          ${ACHIEVEMENTS.slice(0,8).map(a => `
+            <div class="pf-ach${a.unlocked?'':' locked'}">
+              ${a.isNew ? '<span class="pf-ach-new">New</span>' : ''}
+              <div class="pf-ach-icon">${a.icon}</div>
+              <div class="pf-ach-name">${a.name}</div>
+              <div class="pf-ach-desc">${a.desc}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- Historique récent -->
+      <div class="pf-section">
+        <div class="pf-section-title">
+          <span>Historique Ranked</span>
+          <button onclick="openHistory()" style="font-family:var(--font-b);font-size:11px;font-weight:600;color:#7c3aed;cursor:pointer;">Tout voir →</button>
+        </div>
+        <div class="pf-history-list">
+          ${matchHistory.length === 0
+            ? `<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Aucune partie jouée pour le moment</div>`
+            : matchHistory.slice(0,5).map(m => {
+                const sign = m.eloDelta >= 0 ? '+' : '';
+                const col  = m.eloDelta >= 0 ? '#22c55e' : '#ef4444';
+                return `<div class="pf-h-row">
+                  <img class="pf-h-badge" src="assets/ranks/svg/${m.rank.file}.svg">
+                  <span class="pf-h-wpm">${m.wpm} WPM</span>
+                  <span class="pf-h-acc">${m.acc}%</span>
+                  <span class="pf-h-date">${formatDate(m.date)}</span>
+                  <span class="pf-h-elo" style="color:${col}">${sign}${m.eloDelta}</span>
+                </div>`;
+              }).join('')
+          }
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+
+function buildWPMChart() {
+  const data = matchHistory.map(m => m.wpm).slice(0, 30).reverse();
+  if(data.length < 2) {
+    return `<div style="height:100px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;">Joue des parties pour voir ta progression !</div>`;
+  }
+  const w = 600, h = 100, pad = 8;
+  const min = Math.min(...data) - 10;
+  const max = Math.max(...data) + 10;
+  const n = data.length;
+  const xs = data.map((_,i) => pad + (i/(n-1))*(w-pad*2));
+  const ys = data.map(v => h - pad - ((v-min)/(max-min))*(h-pad*2));
+
+  const line = xs.map((x,i) => `${i===0?'M':'L'}${x.toFixed(1)},${ys[i].toFixed(1)}`).join(' ');
+  const area = line + ` L${xs[n-1].toFixed(1)},${h} L${xs[0].toFixed(1)},${h} Z`;
+
+  // Dots pour les derniers points (max 5, mais seulement si l'index existe)
+  const dotsCount = Math.min(5, n);
+  const dots = xs.slice(-dotsCount).map((x,i) => {
+    const ri = n - dotsCount + i;
+    return `<circle cx="${x.toFixed(1)}" cy="${ys[ri].toFixed(1)}" r="3" fill="#7c3aed" opacity="0.8"/>`;
+  }).join('');
+
+  // Labels WPM
+  const labels = [0, Math.floor(n/2), n-1].map(i =>
+    `<text x="${xs[i].toFixed(1)}" y="${h}" font-size="9" fill="#7b6ea8" text-anchor="middle" font-family="monospace">${data[i]}</text>`
+  ).join('');
+
+  return `<svg class="pf-chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="chart-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.2"/>
+        <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.01"/>
+      </linearGradient>
+    </defs>
+    <path d="${area}" fill="url(#chart-grad)"/>
+    <path d="${line}" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${dots}
+    ${labels}
+  </svg>`;
+}
+
+function buildHeatmap() {
+  const weeks = 26;
+  const days = 7;
+  const levels = ['','l1','l2','l3','l4'];
+  let cols = '';
+  for(let w = 0; w < weeks; w++) {
+    let col = '<div class="pf-heatmap-col">';
+    for(let d = 0; d < days; d++) {
+      // Fake activity — more active on weekdays, random intensity
+      const r = Math.random();
+      const active = r > 0.45;
+      const lvl = active ? levels[Math.min(Math.ceil(r*4), 4)] : '';
+      col += `<div class="pf-heatmap-cell ${lvl}" title="${lvl?'Actif':'Inactif'}"></div>`;
+    }
+    col += '</div>';
+    cols += col;
+  }
+  return cols;
+}
+
+/* ══════════════════════════════════════════
+   CLASSEMENT
+══════════════════════════════════════════ */
+
+const LB_NAMES = [
+  'QuantumTypist','SwiftKeys_FR','NightOwl','KeyboardKing','VelvetFingers',
+  'TypeMaster99','PixelRush','CodeStorm','LightningFX','ShadowType',
+  'NeonBlaze','CryptoKeys','ZenTyper','IronFingers','VoidRunner',
+  'StarDrift','PulseType','ArcaneKeys','PhantomFR','ThunderClaw',
+  'MysticPress','VortexType','CrimsonDash','NovaSurge','EchoStrike',
+  'FrostByte','HyperFlux','OmegaType','InfiniteKeys','DarkMatter',
+  'GlitchRun','TurboFR','SilentType','BinaryPulse','NebulaKeys',
+  'ChromeType','IceBreaker','RavenKeys','CosmicType','FusionFR',
+  'SpeedDemon','MatrixKeys','PhotonType','AstralFR','BlazeFinger',
+  'NightShift','SonicRush','ElectroFR','GridRunner','StealthType',
+  'DigitalFR','NanoKeys','SteelType','PlasmaFR','SwiftStrike',
+  'CipherType','MachType','FluxCapacity','RuneKeys','ObsidianFR',
+  'TitanType','VolcanicFR','CelestialKeys','GhostTyper','ZeroLatency',
+  'PrismType','AbyssalFR','SolarFlare','IronWill','TungstenFR',
+  'CarbonFiber','AlphaKeys','BetaType','GammaRush','DeltaFR',
+  'OmegaKeys','SigmaType','ThetaFR','EpsilonKeys','ZetaType',
+  'EtaFR','IotaKeys','KappaType','LambdaFR','MuKeys',
+  'NuType','XiKeys','PiType','RhoFR','TauKeys',
+  'UpsilonType','PhiFR','ChiKeys','PsiType','OmegaFR',
+  'ApexTyper','PinnacleKeys','SummitFR','ZenithType','ApogeeKeys',
+];
+
+const RANK_DETAILS = [
+  { name:'Bronze',   file:'bronze',   range:'0 – 599 ELO',     color:'#d4884a',
+    desc:'Le point de départ. Chaque frappe compte. Apprends les bases et grimpe.' },
+  { name:'Argent',   file:'argent',   range:'600 – 799 ELO',   color:'#6888a0',
+    desc:'Tu as passé les fondations. Ta régularité commence à se voir sur le clavier.' },
+  { name:'Gold',     file:'gold',     range:'800 – 999 ELO',   color:'#c07808',
+    desc:'Milieu de tableau. Ton WPM est respectable, ta précision s\'améliore.' },
+  { name:'Platine',  file:'platine',  range:'1 000 – 1 199 ELO', color:'#4870c0',
+    desc:'Joueur confirmé. La rapidité et la précision commencent à s\'équilibrer.' },
+  { name:'Émeraude', file:'emeraude', range:'1 200 – 1 499 ELO', color:'#087048',
+    desc:'Élite locale. Ton WPM dépasse la moyenne et tes erreurs sont rares.' },
+  { name:'Diamant',  file:'diamant',  range:'1 500 – 1 799 ELO', color:'#1038c0',
+    desc:'Top 10%. Les frappes sont précises, le rythme est fluide et constant.' },
+  { name:'Master',   file:'master',   range:'1 800 – 2 199 ELO', color:'#780818',
+    desc:'Moins de 3% des joueurs. La vitesse et la précision fusionnent parfaitement.' },
+  { name:'Champion', file:'champion', range:'2 200+ ELO',       color:'#6010c0',
+    desc:'Sommet absolu. Les meilleurs typistes de la plateforme. Légende vivante.' },
+];
+
+function genLeaderboard() {
+  const players = [];
+  // 30 Champions (2200-3400), 70 Masters (1800-2199)
+  for(let i = 0; i < 100; i++) {
+    const isChamp = i < 30;
+    const elo = isChamp
+      ? Math.floor(3400 - i * 40 + Math.random() * 20)
+      : Math.floor(2190 - (i-30) * 5.5 + Math.random() * 15);
+    const wpm = Math.floor(elo / 15 + Math.random() * 12);
+    players.push({
+      pos: i + 1,
+      name: LB_NAMES[i] || `Player${i+1}`,
+      elo,
+      wpm,
+      rank: isChamp ? RANK_DETAILS[7] : RANK_DETAILS[6],
+      isChamp,
+    });
+  }
+  return players;
+}
+
+let lbData = null;
+
+function openLB() {
+  if(!lbData) lbData = genLeaderboard();
+  renderLBTop();
+  renderLBRanks();
+  document.getElementById('lb-screen').classList.add('active');
+}
+
+function closeLB() {
+  document.getElementById('lb-screen').classList.remove('active');
+}
+
+function switchLBTab(tab) {
+  document.querySelectorAll('.lb-tab').forEach((t,i) => {
+    t.classList.toggle('active', (tab==='top' && i===0)||(tab==='ranks' && i===1));
+  });
+  document.getElementById('lb-pane-top').classList.toggle('show', tab==='top');
+  document.getElementById('lb-pane-ranks').classList.toggle('show', tab==='ranks');
+}
+
+function renderLBTop() {
+  const list = document.getElementById('lb-list');
+  const userRank = getRankForELO(currentELO);
+  const lastWpm = matchHistory[0]?.wpm || 0;
+
+  // Cloner lbData sans entrée joueur précédente
+  let data = lbData.filter(p => !p.isUser).map(p => ({...p}));
+
+  let actualPos = null;
+  if(currentELO > 0) {
+    // Trouver la bonne position par comparaison ELO directe
+    let insertIdx = data.findIndex(p => p.elo <= currentELO);
+    if(insertIdx === -1) insertIdx = data.length;
+
+    // Insérer seulement si le joueur bat le dernier de la liste
+    if(insertIdx < data.length || data.length < 100) {
+      const userRankDetail = RANK_DETAILS.find(r => r.file === userRank.file) || RANK_DETAILS[0];
+      const userEntry = {
+        pos: insertIdx + 1, name: 'Matéo', elo: currentELO,
+        wpm: lastWpm, rank: userRankDetail,
+        isUser: true, isChamp: currentELO >= 2200,
+      };
+      data.splice(insertIdx, 0, userEntry);
+      data = data.slice(0, 101); // max 101 lignes affichées
+      actualPos = insertIdx + 1;
+    }
+  }
+
+  // Renuméroter proprement
+  data.forEach((p, i) => p.pos = i + 1);
+
+  // Mettre à jour la sticky bar avec la vraie position
+  const posEl = document.getElementById('lb-user-pos');
+  if(posEl) {
+    const displayPos = actualPos ?? getPlayerPosition(currentELO);
+    posEl.textContent = displayPos <= 3 ? ['🥇','🥈','🥉'][displayPos-1] : '#' + displayPos.toLocaleString('fr-FR');
+    posEl.style.color = displayPos <= 100 ? '#7c3aed' : '';
+  }
+
+  list.innerHTML = data.map(p => {
+    const posClass = p.pos===1?'gold-pos':p.pos===2?'silver-pos':p.pos===3?'bronze-pos':'';
+    const rowClass = (p.isChamp ? 'lb-row champion-row' : 'lb-row') + (p.isUser ? ' lb-row-you' : '');
+    const sep = p.pos===30 && !p.isUser ? '<div class="lb-sep"></div>' : '';
+    const posLabel = p.pos===1?'🥇':p.pos===2?'🥈':p.pos===3?'🥉':'#'+p.pos;
+    const youBadge = p.isUser ? ' <span class="lb-you" style="font-size:9px">Vous</span>' : '';
+    return `${sep}<div class="${rowClass}">
+      <div class="lb-pos ${posClass}">${posLabel}</div>
+      <img class="lb-badge-img" src="assets/ranks/svg/${p.rank.file}.svg" alt="${p.rank.name}">
+      <div style="flex:1;min-width:0">
+        <div class="lb-name">${p.name}${youBadge}</div>
+        <div class="lb-rank-name">${p.rank.name}</div>
+      </div>
+      <div class="lb-elo">${p.elo.toLocaleString('fr-FR')} <span style="font-size:10px;color:var(--muted)">ELO</span></div>
+      <div class="lb-wpm">${p.wpm} <span style="font-size:10px;color:var(--muted)">WPM</span></div>
+    </div>`;
+  }).join('');
+}
+
+// Pourcentages de joueurs par rang — Bronze=100% (tout le monde), Champion=0.5% (élite)
+const RANK_PCT = [100, 50, 30, 20, 12, 6, 2, 0.5];
+
+function renderLBRanks() {
+  const row = document.getElementById('lb-ranks-row');
+  // Bronze (gauche, petit) → Champion (droite, grand)
+  row.innerHTML = RANK_DETAILS.map((r, i) => `
+    <div class="lb-rank-item" style="--rc:${r.color}" onclick="selectRank(${i})" data-idx="${i}">
+      <img class="lb-rank-badge" src="assets/ranks/svg/${r.file}.svg" alt="${r.name}">
+      <div class="lb-rank-title">${r.name}</div>
+    </div>
+  `).join('');
+  // Sélectionner Champion par défaut
+  selectRank(7);
+}
+
+function selectRank(idx) {
+  const r = RANK_DETAILS[idx];
+  const pct = RANK_PCT[idx];
+
+  // Mettre à jour la sélection visuelle
+  document.querySelectorAll('.lb-rank-item').forEach(el => {
+    el.classList.toggle('selected', parseInt(el.dataset.idx) === idx);
+    el.style.setProperty('--rc', RANK_DETAILS[parseInt(el.dataset.idx)].color);
+  });
+
+  // Mettre à jour le détail
+  document.getElementById('lb-detail-badge').src = `assets/ranks/svg/${r.file}.svg`;
+  document.getElementById('lb-detail-title').textContent = r.name;
+  document.getElementById('lb-detail-range').textContent = r.range;
+  document.getElementById('lb-detail-range').style.color = r.color;
+  document.getElementById('lb-detail-desc').textContent = r.desc;
+  document.getElementById('lb-detail-fill').style.background = r.color;
+  document.getElementById('lb-detail-fill').style.width = pct + '%';
+  document.getElementById('lb-detail-pct').textContent =
+    pct <= 2  ? `Top ${pct}% des joueurs — rang d'élite` :
+    pct <= 20 ? `Atteint par ${pct}% des joueurs` :
+                `Rang de départ — ${pct}% des joueurs`;
+}
+
+/* ══════════════════════════════════════════
+   HISTORIQUE RANKED
+══════════════════════════════════════════ */
+
+let matchHistory = []; // { wpm, acc, errors, eloDelta, date, rank }
+
+const RANK_INFO = [
+  { name:'Bronze',   file:'bronze',   min:0    },
+  { name:'Argent',   file:'argent',   min:600  },
+  { name:'Gold',     file:'gold',     min:800  },
+  { name:'Platine',  file:'platine',  min:1000 },
+  { name:'Émeraude', file:'emeraude', min:1200 },
+  { name:'Diamant',  file:'diamant',  min:1500 },
+  { name:'Master',   file:'master',   min:1800 },
+  { name:'Champion', file:'champion', min:2200 },
+];
+
+let currentELO = 0;
+
+/* ══════════════════════════════════════════
+   PERSISTENCE — localStorage
+══════════════════════════════════════════ */
+const STORAGE_KEY = 'apm_save_v1';
+
+function saveStorage() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      elo: currentELO,
+      matchHistory,
+      bossesBeaten: BOSSES.map(b => b.beaten),
+      achievements: ACHIEVEMENTS.map(a => ({ unlocked: a.unlocked, isNew: a.isNew })),
+    }));
+  } catch(e) {}
+}
+
+function initStorage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) {
+      const data = JSON.parse(raw);
+      currentELO = data.elo ?? 0;
+      matchHistory = (data.matchHistory ?? []).map(m => ({ ...m, date: new Date(m.date) }));
+      (data.bossesBeaten ?? []).forEach((beaten, i) => { if(BOSSES[i]) BOSSES[i].beaten = beaten; });
+      (data.achievements ?? []).forEach((a, i) => {
+        if(ACHIEVEMENTS[i]) { ACHIEVEMENTS[i].unlocked = a.unlocked; ACHIEVEMENTS[i].isNew = a.isNew; }
+      });
+    }
+  } catch(e) {}
+  updateDynamicUI();
+}
+
+function getPlayerPosition(elo) {
+  if(elo <= 0) return 5000;
+  const topElo = 3400; // ELO du #1 fictif
+  if(elo >= topElo) return 1;
+  if(elo >= 1819) {
+    // Top 100 : 1819 ELO = #100, topElo = #1
+    const t = (elo - 1819) / (topElo - 1819);
+    return Math.max(1, Math.round(100 - t * 99));
+  }
+  // Hors top 100 : 0 ELO = #5000, 1819 ELO = #101
+  const t = Math.pow(elo / 1819, 0.8); // légère courbe
+  return Math.round(5000 - t * 4899);
+}
+
+function updateDynamicUI() {
+  const rank = getRankForELO(currentELO);
+  const eloStr = currentELO.toLocaleString('fr-FR');
+  const last = matchHistory[0];
+
+  // Header pill
+  const hImg  = document.getElementById('h-rank-img');
+  const hName = document.getElementById('h-rank-name');
+  const hElo  = document.getElementById('h-rank-elo');
+  if(hImg)  hImg.src          = `assets/ranks/svg/${rank.file}.svg`;
+  if(hName) hName.textContent  = rank.name;
+  if(hElo)  hElo.textContent   = `${eloStr} ELO`;
+
+  // Ranked card
+  const rsImg  = document.getElementById('rs-rank-img');
+  const rsName = document.getElementById('rs-rank-name');
+  const rsElo  = document.getElementById('rs-rank-elo');
+  const rsWpm  = document.getElementById('rs-last-wpm');
+  const rsDelta= document.getElementById('rs-last-elo-delta');
+  if(rsImg)   rsImg.src           = `assets/ranks/svg/${rank.file}.svg`;
+  if(rsName)  rsName.textContent   = rank.name;
+  if(rsElo)   rsElo.textContent    = `${eloStr} ELO`;
+  if(rsWpm)   rsWpm.textContent    = last ? `${last.wpm} WPM` : '— WPM';
+  if(rsDelta) rsDelta.textContent  = last ? (last.eloDelta >= 0 ? '+' : '') + last.eloDelta : '—';
+
+  // Leaderboard user row
+  const lbImg  = document.getElementById('lb-rank-img');
+  const lbText = document.getElementById('lb-user-elo-text');
+  const lbNum  = document.getElementById('lb-user-elo-num');
+  const lbWpm  = document.getElementById('lb-user-wpm');
+  if(lbImg)  lbImg.src          = `assets/ranks/svg/${rank.file}.svg`;
+  if(lbText) lbText.textContent  = `${eloStr} ELO · ${rank.name}`;
+  if(lbNum)  lbNum.textContent   = eloStr;
+  if(lbWpm)  lbWpm.textContent   = last ? `${last.wpm} WPM` : '— WPM';
+  // Position dans le classement
+  const posEl = document.getElementById('lb-user-pos');
+  if(posEl) {
+    const pos = getPlayerPosition(currentELO);
+    posEl.textContent = pos <= 3 ? ['🥇','🥈','🥉'][pos-1] : '#' + pos.toLocaleString('fr-FR');
+    posEl.style.color = pos <= 100 ? '#7c3aed' : '';
+  }
+}
+
+function getRankForELO(elo) {
+  for(let i = RANK_INFO.length - 1; i >= 0; i--) {
+    if(elo >= RANK_INFO[i].min) return RANK_INFO[i];
+  }
+  return RANK_INFO[0];
+}
+
+function saveRankedMatch(wpm, acc, errors, eloDelta) {
+  currentELO = Math.max(0, currentELO + eloDelta);
+  const rank = getRankForELO(currentELO);
+  matchHistory.unshift({ wpm, acc, errors, eloDelta, elo: currentELO, rank, date: new Date() });
+  updateDynamicUI();
+  saveStorage();
+}
+
+function formatDate(d) {
+  const now = new Date();
+  const diff = Math.floor((now - d) / 1000);
+  if(diff < 60) return "À l'instant";
+  if(diff < 3600) return `Il y a ${Math.floor(diff/60)} min`;
+  if(diff < 86400) return `Il y a ${Math.floor(diff/3600)} h`;
+  return d.toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
+}
+
+function openHistory() {
+  renderHistory();
+  document.getElementById('history-overlay').classList.add('open');
+}
+
+function closeHistory() {
+  document.getElementById('history-overlay').classList.remove('open');
+}
+
+function renderHistory() {
+  const body = document.getElementById('history-body');
+  if(matchHistory.length === 0) {
+    body.innerHTML = `<div class="history-empty"><span>⚔️</span>Aucune partie jouée pour le moment</div>`;
+    return;
+  }
+  body.innerHTML = matchHistory.map(m => {
+    const sign = m.eloDelta >= 0 ? '+' : '';
+    const cls  = m.eloDelta >= 0 ? 'pos' : 'neg';
+    return `
+    <div class="h-match">
+      <img class="h-match-badge" src="assets/ranks/svg/${m.rank.file}.svg" alt="${m.rank.name}">
+      <div class="h-match-info">
+        <div class="h-match-row1">
+          <span class="h-match-wpm">${m.wpm} WPM</span>
+          <span class="h-match-acc">${m.acc}% précision</span>
+        </div>
+        <div class="h-match-date">${formatDate(m.date)} · ${m.errors} erreur${m.errors !== 1 ? 's' : ''} · ${m.elo} ELO</div>
+      </div>
+      <span class="h-match-elo ${cls}">${sign}${m.eloDelta}</span>
+    </div>`;
+  }).join('');
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') closeHistory();
+});
+
+
+/* ─── Rank-up animation ─── */
+function showRankUp(oldRank, newRank) {
+  const ov = document.getElementById('rankup-overlay');
+  document.getElementById('ru-old-img').src  = `assets/ranks/svg/${oldRank.file}.svg`;
+  document.getElementById('ru-old-name').textContent = oldRank.name;
+  document.getElementById('ru-new-img').src  = `assets/ranks/svg/${newRank.file}.svg`;
+  document.getElementById('ru-new-name').textContent = newRank.name;
+
+  // Particules
+  const pc = document.getElementById('ru-particles');
+  pc.innerHTML = '';
+  const colors = ['#d4af37','#f5e07a','#fff','#c4b5fd','#a78bfa'];
+  for(let i = 0; i < 24; i++) {
+    const p = document.createElement('div');
+    p.className = 'ru-particle';
+    const angle = (i / 24) * Math.PI * 2;
+    const dist  = 60 + Math.random() * 80;
+    p.style.cssText = `
+      left:${48 + 48 + 32 + 48}px; top:48px;
+      --tx:${Math.cos(angle)*dist}px;
+      --ty:${Math.sin(angle)*dist - 40}px;
+      --dur:${0.6 + Math.random()*0.5}s;
+      --delay:${0.5 + Math.random()*0.3}s;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      width:${4+Math.random()*5}px;height:${4+Math.random()*5}px;
+    `;
+    pc.appendChild(p);
+  }
+
+  ov.classList.add('active');
+  // Fermer après 3.2s ou au clic
+  const close = () => {
+    ov.classList.remove('active');
+    ov.removeEventListener('click', close);
+  };
+  setTimeout(close, 3200);
+  ov.addEventListener('click', close);
+}
+
+
+// ── Touches secrètes : F5 = +100 ELO / F6 = -100 ELO (debug) ──
+document.addEventListener('keydown', e => {
+  if(e.key !== 'F5' && e.key !== 'F6') return;
+  e.preventDefault();
+  const prevRank = getRankForELO(currentELO);
+  if(e.key === 'F5') currentELO = Math.min(currentELO + 100, 9999);
+  if(e.key === 'F6') currentELO = Math.max(currentELO - 100, 0);
+  const newRank = getRankForELO(currentELO);
+  updateDynamicUI();
+  saveStorage();
+  // Flash doré (montée) ou rouge (descente)
+  const pill = document.querySelector('.h-pill:last-of-type');
+  if(pill) {
+    const color = e.key === 'F5' ? 'rgba(212,175,55,0.7)' : 'rgba(190,18,60,0.6)';
+    pill.style.transition = 'box-shadow .1s';
+    pill.style.boxShadow = `0 0 0 3px ${color}`;
+    setTimeout(() => pill.style.boxShadow = '', 400);
+  }
+  // Animation de promotion si rank-up (F5 seulement)
+  if(e.key === 'F5' && newRank !== prevRank && newRank.min > prevRank.min) {
+    showRankUp(prevRank, newRank);
+  }
+});
+
+try { initStorage(); } catch(e) { console.error("initStorage failed:", e); }
+
+</script>
+
+<!-- RANK-UP OVERLAY -->
+<div id="rankup-overlay">
+  <div class="ru-backdrop"></div>
+  <div class="ru-content">
+    <div class="ru-label">Promotion !</div>
+    <div class="ru-badges">
+      <div class="ru-badge-wrap ru-old">
+        <img id="ru-old-img" src="" alt="">
+        <span id="ru-old-name"></span>
+      </div>
+      <div class="ru-arrow">→</div>
+      <div class="ru-badge-wrap ru-new">
+        <img id="ru-new-img" src="" alt="">
+        <span id="ru-new-name"></span>
+      </div>
+    </div>
+    <div class="ru-sub">Nouveau rang atteint</div>
+    <div class="ru-particles" id="ru-particles"></div>
+  </div>
+</div>
+
+</body>
+</html>
