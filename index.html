@@ -4098,12 +4098,10 @@ function saveStorage() {
 
 function applyData(data) {
   if(!data) return;
-  currentELO  = data.elo ?? data.elo ?? 0;
-  const history = data.match_history ?? data.matchHistory ?? [];
+  currentELO   = data.elo ?? 0;
+  const history = data.match_history ?? [];
   matchHistory = history.map(m => ({ ...m, date: new Date(m.date) }));
-  (data.bosses_beaten ?? data.bossesBeaten ?? []).forEach((beaten, i) => {
-    if(BOSSES[i]) BOSSES[i].beaten = beaten;
-  });
+  (data.bosses_beaten ?? []).forEach((beaten, i) => { if(BOSSES[i]) BOSSES[i].beaten = beaten; });
   (data.achievements ?? []).forEach((a, i) => {
     if(ACHIEVEMENTS[i]) { ACHIEVEMENTS[i].unlocked = a.unlocked; ACHIEVEMENTS[i].isNew = a.isNew; }
   });
@@ -4330,53 +4328,47 @@ let playerName = 'Joueur';
 
 
 /* ══════════════════════════════════════════
-   CLOUD SAVE — Supabase
-   → Remplacer les deux lignes ci-dessous
-     avec tes credentials Supabase
+   CLOUD SAVE — CrazyGames Data Module
+   Fallback : localStorage uniquement
 ══════════════════════════════════════════ */
-const SUPABASE_URL     = 'https://fuehrnyitfiroxyfjpgz.supabase.co';
-const SUPABASE_ANON    = 'sb_publishable_7QPsZpB5RqVUT2AADHi-JA_p3sV1vij';
 
 let _cloudSaveTimer = null;
-let cloudSyncStatus = 'idle'; // 'idle' | 'saving' | 'saved' | 'offline'
+let cloudSyncStatus = 'idle';
+const CG_SAVE_KEY = 'apm_save';
 
-function getDeviceId() {
-  let id = localStorage.getItem('apm_device_id');
-  if(!id) {
-    id = crypto.randomUUID?.() || Math.random().toString(36).slice(2) + Date.now().toString(36);
-    localStorage.setItem('apm_device_id', id);
-  }
-  return id;
+function hasCGData() {
+  return !!window.CrazyGames?.SDK?.data;
 }
 
-function isCloudConfigured() {
-  return SUPABASE_URL !== 'VOTRE_URL_SUPABASE' && SUPABASE_ANON !== 'VOTRE_CLE_ANON';
+function updateSyncIndicator() {
+  const el = document.getElementById('sync-indicator');
+  if(!el || !hasCGData()) return;
+  const states = {
+    idle:    { text:'',              color:'transparent' },
+    saving:  { text:'↑ Sync...',    color:'#a78bfa' },
+    saved:   { text:'✓ Sauvegardé', color:'#4ade80' },
+    offline: { text:'⚠ Offline',    color:'#fb923c' },
+  };
+  const s = states[cloudSyncStatus];
+  el.textContent = s.text;
+  el.style.color = s.color;
+  el.style.opacity = s.text ? '1' : '0';
 }
 
 async function saveToCloud() {
-  if(!isCloudConfigured()) return;
+  if(!hasCGData()) return;
   cloudSyncStatus = 'saving';
   updateSyncIndicator();
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/players`, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_ANON,
-        'Authorization': `Bearer ${SUPABASE_ANON}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates',
-      },
-      body: JSON.stringify({
-        device_id:    getDeviceId(),
-        player_name:  playerName,
-        elo:          currentELO,
-        match_history: matchHistory.slice(0, 50),
-        bosses_beaten: BOSSES.map(b => b.beaten),
-        achievements: ACHIEVEMENTS.map(a => ({ unlocked: a.unlocked, isNew: a.isNew })),
-        updated_at:   new Date().toISOString(),
-      }),
+    const payload = JSON.stringify({
+      elo: currentELO,
+      player_name: playerName,
+      match_history: matchHistory.slice(0, 50),
+      bosses_beaten: BOSSES.map(b => b.beaten),
+      achievements: ACHIEVEMENTS.map(a => ({ unlocked: a.unlocked, isNew: a.isNew })),
     });
-    cloudSyncStatus = res.ok ? 'saved' : 'offline';
+    await CrazyGames.SDK.data.setItem(CG_SAVE_KEY, payload);
+    cloudSyncStatus = 'saved';
   } catch(e) {
     cloudSyncStatus = 'offline';
   }
@@ -4392,137 +4384,14 @@ function debouncedCloudSave() {
 }
 
 async function loadFromCloud() {
-  if(!isCloudConfigured()) return null;
+  if(!hasCGData()) return null;
   try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/players?device_id=eq.${getDeviceId()}&select=*`,
-      { headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` } }
-    );
-    const rows = await res.json();
-    return rows[0] || null;
+    const raw = await CrazyGames.SDK.data.getItem(CG_SAVE_KEY);
+    if(!raw) return null;
+    const data = JSON.parse(raw);
+    data.match_history = (data.match_history || []).map(m => ({ ...m, date: new Date(m.date) }));
+    return data;
   } catch(e) { return null; }
-}
-
-function updateSyncIndicator() {
-  const el = document.getElementById('sync-indicator');
-  if(!el || !isCloudConfigured()) return;
-  const states = {
-    idle:    { text:'',             color:'transparent' },
-    saving:  { text:'↑ Sync...',   color:'#a78bfa' },
-    saved:   { text:'✓ Sauvegardé',color:'#4ade80' },
-    offline: { text:'⚠ Offline',   color:'#fb923c' },
-  };
-  const s = states[cloudSyncStatus];
-  el.textContent  = s.text;
-  el.style.color  = s.color;
-  el.style.opacity = s.text ? '1' : '0';
-}
-
-async function initCrazyGames() {
-  try {
-    // Initialiser le SDK si disponible
-    if(window.CrazyGames?.SDK) {
-      await CrazyGames.SDK.init();
-      initAds(); // enregistrer les listeners d'ads
-      const user = await CrazyGames.SDK.user.getUser();
-      if(user?.username) {
-        playerName = user.username;
-        savePlayerName(playerName);
-        return;
-      }
-    }
-  } catch(e) {}
-  // Fallback : pseudo en localStorage ou prompt
-  const saved = localStorage.getItem('apm_player_name');
-  if(saved) {
-    playerName = saved;
-  } else {
-    showPseudoModal();
-  }
-}
-
-function savePlayerName(name) {
-  playerName = name;
-  localStorage.setItem('apm_player_name', name);
-  updatePlayerNameUI();
-}
-
-function updatePlayerNameUI() {
-  // Leaderboard user bar
-  const lbName = document.querySelector('.lb-user-name');
-  if(lbName) lbName.innerHTML = playerName + ' <span class="lb-you">Vous</span>';
-  // Header avatar : initiale
-  const av = document.querySelector('.h-avatar');
-  if(av) av.textContent = playerName[0].toUpperCase();
-  // Profil username
-  const pfName = document.getElementById('pf-username');
-  if(pfName) pfName.textContent = playerName;
-}
-
-function showPseudoModal() {
-  const ov = document.getElementById('pseudo-overlay');
-  ov.classList.add('open');
-  ov.style.display = 'flex';
-  setTimeout(() => document.getElementById('pseudo-input')?.focus(), 200);
-}
-
-function confirmPseudo() {
-  const input = document.getElementById('pseudo-input');
-  const name = input.value.trim();
-  if(name.length < 3) {
-    input.style.borderColor = '#ef4444';
-    input.focus();
-    return;
-  }
-  savePlayerName(name);
-  saveStorage(); // sync Supabase avec le vrai pseudo
-  document.getElementById('pseudo-overlay').style.display = 'none';
-  document.getElementById('pseudo-overlay').classList.remove('open');
-}
-
-// Enter valide le pseudo
-document.addEventListener('keydown', e => {
-  if(e.key === 'Enter' && document.getElementById('pseudo-overlay')?.style.display !== 'none') {
-    confirmPseudo();
-  }
-});
-
-
-function startEditPseudo() {
-  const display = document.getElementById('pf-username-display');
-  if(!display) return;
-  const wrap = display.parentElement;
-  const btn = wrap.querySelector('.pf-edit-btn');
-  // Remplacer le texte par un input
-  const input = document.createElement('input');
-  input.className = 'pf-edit-input';
-  input.value = playerName;
-  input.maxLength = 20;
-  display.style.display = 'none';
-  btn.style.display = 'none';
-  wrap.insertBefore(input, display);
-  input.focus();
-  input.select();
-  const commit = () => {
-    const name = input.value.trim();
-    if(name.length >= 3) {
-      savePlayerName(name);
-      saveStorage();
-    }
-    input.remove();
-    display.textContent = playerName;
-    display.style.display = '';
-    btn.style.display = '';
-  };
-  input.addEventListener('blur', commit);
-  input.addEventListener('keydown', e => {
-    if(e.key === 'Enter') { e.preventDefault(); commit(); }
-    if(e.key === 'Escape') {
-      input.remove();
-      display.style.display = '';
-      btn.style.display = '';
-    }
-  });
 }
 
 /* ══════════════════════════════════════════
