@@ -4158,26 +4158,26 @@ function showRankUp(oldRank, newRank) {
 }
 
 
-// ── Touches secrètes : F5 = +100 ELO / F6 = -100 ELO (debug) ──
+// ── Touches secrètes : F1 = +100 ELO / F2 = -100 ELO (debug) ──
 document.addEventListener('keydown', e => {
-  if(e.key !== 'F5' && e.key !== 'F6') return;
+  if(e.key !== 'F1' && e.key !== 'F2') return;
   e.preventDefault();
   const prevRank = getRankForELO(currentELO);
-  if(e.key === 'F5') currentELO = Math.min(currentELO + 100, 9999);
-  if(e.key === 'F6') currentELO = Math.max(currentELO - 100, 0);
+  if(e.key === 'F1') currentELO = Math.min(currentELO + 100, 9999);
+  if(e.key === 'F2') currentELO = Math.max(currentELO - 100, 0);
   const newRank = getRankForELO(currentELO);
   updateDynamicUI();
   saveStorage();
   // Flash doré (montée) ou rouge (descente)
   const pill = document.querySelector('.h-pill:last-of-type');
   if(pill) {
-    const color = e.key === 'F5' ? 'rgba(212,175,55,0.7)' : 'rgba(190,18,60,0.6)';
+    const color = e.key === 'F1' ? 'rgba(212,175,55,0.7)' : 'rgba(190,18,60,0.6)';
     pill.style.transition = 'box-shadow .1s';
     pill.style.boxShadow = `0 0 0 3px ${color}`;
     setTimeout(() => pill.style.boxShadow = '', 400);
   }
   // Animation de promotion si rank-up (F5 seulement)
-  if(e.key === 'F5' && newRank !== prevRank && newRank.min > prevRank.min) {
+  if(e.key === 'F1' && newRank !== prevRank && newRank.min > prevRank.min) {
     showRankUp(prevRank, newRank);
   }
 });
