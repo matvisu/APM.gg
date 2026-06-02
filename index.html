@@ -1927,6 +1927,22 @@ footer{
 .pm-btn:hover { opacity:.92;transform:translateY(-1px); }
 .pm-btn:active { transform:scale(.97); }
 
+
+.pf-username-wrap { display:flex; align-items:center; gap:8px; }
+.pf-edit-btn {
+  background:none; border:none; cursor:pointer;
+  font-size:13px; color:var(--muted); padding:2px 4px;
+  border-radius:6px; transition:color .15s, background .15s;
+  line-height:1;
+}
+.pf-edit-btn:hover { color:var(--ink); background:rgba(124,58,237,0.08); }
+.pf-edit-input {
+  font-family:var(--font-d); font-size:18px; font-weight:800;
+  color:var(--ink); border:none; border-bottom:2px solid #7c3aed;
+  background:transparent; outline:none; width:160px;
+  padding:2px 0;
+}
+
 </style>
   <!-- CrazyGames SDK -->
   <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
@@ -3527,7 +3543,10 @@ function renderProfile() {
       <!-- Hero -->
       <div class="pf-hero">
         <div class="pf-avatar">${playerName[0].toUpperCase()}</div>
-        <div class="pf-username">${playerName}</div>
+        <div class="pf-username-wrap">
+          <div class="pf-username" id="pf-username-display">${playerName}</div>
+          <button class="pf-edit-btn" onclick="startEditPseudo()" title="Modifier le pseudo">✏️</button>
+        </div>
         <div class="pf-badge-row">
           <img class="pf-rank-badge" src="assets/ranks/svg/${rank.file}.svg">
           <span class="pf-rank-name">${rank.name}</span>
@@ -4316,6 +4335,7 @@ function confirmPseudo() {
     return;
   }
   savePlayerName(name);
+  saveStorage(); // sync Supabase avec le vrai pseudo
   document.getElementById('pseudo-overlay').style.display = 'none';
   document.getElementById('pseudo-overlay').classList.remove('open');
 }
@@ -4327,6 +4347,43 @@ document.addEventListener('keydown', e => {
   }
 });
 
+
+function startEditPseudo() {
+  const display = document.getElementById('pf-username-display');
+  if(!display) return;
+  const wrap = display.parentElement;
+  const btn = wrap.querySelector('.pf-edit-btn');
+  // Remplacer le texte par un input
+  const input = document.createElement('input');
+  input.className = 'pf-edit-input';
+  input.value = playerName;
+  input.maxLength = 20;
+  display.style.display = 'none';
+  btn.style.display = 'none';
+  wrap.insertBefore(input, display);
+  input.focus();
+  input.select();
+  const commit = () => {
+    const name = input.value.trim();
+    if(name.length >= 3) {
+      savePlayerName(name);
+      saveStorage();
+    }
+    input.remove();
+    display.textContent = playerName;
+    display.style.display = '';
+    btn.style.display = '';
+  };
+  input.addEventListener('blur', commit);
+  input.addEventListener('keydown', e => {
+    if(e.key === 'Enter') { e.preventDefault(); commit(); }
+    if(e.key === 'Escape') {
+      input.remove();
+      display.style.display = '';
+      btn.style.display = '';
+    }
+  });
+}
 try { initStorage(); } catch(e) { console.error("initStorage failed:", e); }
 initCrazyGames();
 
